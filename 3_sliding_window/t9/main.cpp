@@ -11,27 +11,39 @@ string p = "bb";
 class Solution {
 public:
     vector<int> findAnagrams(string s, string p) {
+        int length_s = s.size();
+        int length_p = p.size();
         vector<int> ans;
-        if(p.size() > s.size()){
-            return ans;
+        if(length_p > length_s) return ans;
+        vector<int> count(26);
+        for(int i = 0; i < length_p; ++i){
+            ++count[s[i] - 'a'];
+            --count[p[i] - 'a'];
         }
-        unordered_map<char,int> count_p;
-        unordered_map<char,int> count_s;
-        for(int i=0; i<p.size(); i++){
-            count_s[s[i]]++;
-            count_p[p[i]]++;
+        int differ = 0;
+        for(int i = 0; i < 26; i++){
+            if(count[i])    ++differ;
         }
-        int s_start = 0;
-        int s_end = p.size() - 1;
-        while(s_end < s.size()){
-            if(count_s == count_p){
-                ans.emplace_back(s_start);
+        if(!differ) ans.emplace_back(0);
+        int s_start = 0, s_end = length_p;
+        while(s_end < length_s){
+            if(count[s[s_start] - 'a'] == 0){
+                ++differ;
             }
-            count_s[s[s_start++]]--;
-            if(count_s[s[s_start - 1]] == 0){
-                count_s.erase(s[s_start - 1]);
+            --count[s[s_start] - 'a'];
+            if(count[s[s_start] - 'a'] == 0){
+                --differ;
             }
-            count_s[s[++s_end]]++;
+            ++s_start;
+            if(count[s[s_end] - 'a'] == 0){
+                ++differ;
+            }
+            ++count[s[s_end] - 'a'];
+            if(count[s[s_end] - 'a'] == 0){
+                --differ;
+            }
+            ++s_end;
+            if(!differ) ans.emplace_back(s_start);
         }
         return ans;
     }

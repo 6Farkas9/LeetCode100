@@ -4,19 +4,28 @@
 using namespace std;
 
 vector<int> nums{4,2,4,0,0,3,0,5,1,0};
+// vector<int> nums{0};
 
 class Solution {
 public:
     void moveZeroes(vector<int>& nums) {
-        int insert_pos = 0;
-        for(int i = 0;i<nums.size();i++){
-            if(nums[i] != 0){
-                nums[insert_pos] = nums[i];
-                insert_pos++;
+        int i = 0, j = 0;
+        int length = nums.size();
+        while(i < length){
+            if(nums[i] == 0){
+                if(j < i)   j = i + 1;
+                while(j < length && nums[j] == 0)   ++j;
+                if(j < length){
+                    swap(nums[i], nums[j]);
+                }
+                else{
+                    break;
+                }
+            }
+            else{
+                ++i;
             }
         }
-        for(int i = insert_pos;i<nums.size();i++)
-            nums[i] = 0;
     }
 };
 

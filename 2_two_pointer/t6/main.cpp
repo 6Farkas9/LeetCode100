@@ -6,53 +6,45 @@
 
 using namespace std;
 
-vector<int> nums{0,0,0,0};
+vector<int> nums{-1,0,1,2,-1,-4};
 
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
+        int length = nums.size() - 1;
+        sort(nums.begin(), nums.end());
         vector<vector<int>> res;
-        sort(nums.begin(),nums.end());
-        cout << endl;
-        for(int i = 0;i < nums.size() && nums[i] <= 0;){
-            int j = i + 1;
-            int k = nums.size() - 1;
-            bool move_j = true;
-            while(j < k){
-                if(nums[i] + nums[j] + nums[k] == 0){
-                    vector<int> temp{nums[i] ,nums[j] ,nums[k]};
+        for(int i = 0; i <= length && nums[i] <= 0;){
+            int j = length;
+            int k = i + 1;
+            bool move_k = true;
+            while(k < j){
+                if(nums[i] + nums[k] + nums[j] == 0){
+                    vector<int> temp{nums[i], nums[k], nums[j]};
                     res.push_back(temp);
-                    if(move_j){
-                        int temp = nums[j];
-                        while(j <= k && nums[j] == temp){
-                            j++;
-                        }
+                    if(move_k){
+                        int origin_num = nums[k++];
+                        while(k < j && nums[k] == origin_num)   ++k;
                     }
                     else{
-                        int temp = nums[k];
-                        while(j <= k && nums[k] == temp){
-                            k--;
-                        }
+                        int origin_num = nums[j--];
+                        while(k < j && nums[j] == origin_num)   --j;
                     }
-                    move_j = !move_j;
+                    move_k = !move_k;
                 }
-                else if(nums[i] + nums[j] + nums[k] < 0){
-                    int temp = nums[j];
-                    while(j <= k && nums[j] == temp){
-                        j++;
-                    }
+                else if(nums[i] + nums[k] + nums[j] < 0){
+                    int origin_num = nums[k++];
+                    while(k < j && nums[k] == origin_num)   ++k;
+                    move_k = false;
                 }
                 else{
-                    int temp = nums[k];
-                    while(j <= k && nums[k] == temp){
-                        k--;
-                    }
+                    int origin_num = nums[j--];
+                    while(k < j && nums[j] == origin_num)   --j;
+                    move_k = true;
                 }
             }
-            int temp = nums[i];
-            while(i < nums.size() && nums[i] <= 0 && nums[i] == temp){
-                i++;
-            }
+            int origin_num = nums[i++];
+            while(i <= length && nums[i] <= 0 && nums[i] == origin_num) ++i;
         }
         return res;
     }

@@ -3,28 +3,44 @@
 
 using namespace std;
 
-vector<int> nums{4,2,3};
+vector<int> nums{1,2,3};
 
 class Solution {
 public:
     int trap(vector<int>& height) {
-        int n = height.size();
-        if(n == 0)
-            return 0;
+        int length = height.size();
+        int i = 0, j = length - 1;
         int res = 0;
-        vector<int> left_max(n);
-        vector<int> right_max(n);
-        left_max[0] = height[0];
-        right_max[n-1] = height[n-1];
-        for(int i=1; i<n; i++){
-            left_max[i] = max(left_max[i-1],height[i]);
+        int current_edge = i;
+        int current_height = height[i];
+        int temp_add = 0;
+        while(i <= j){
+            if(height[i] >= current_height){
+                res += temp_add;
+                temp_add = 0;
+                current_edge = i;
+                current_height = height[i];
+            }
+            else{
+                temp_add += current_height - height[i];
+            }
+            ++i;
         }
-        for(int i=n-2; i>=0; i--){
-            right_max[i] = max(right_max[i+1],height[i]);
-        }
-        for(int i=0; i<n; i++){
-            int highest = min(left_max[i],right_max[i]);
-            res += highest - height[i];
+        i = current_edge;
+        current_edge = j;
+        current_height = height[j];
+        temp_add = 0;
+        while(i <= j){
+            if(height[j] >= current_height){
+                res += temp_add;
+                temp_add = 0;
+                current_edge = j;
+                current_height = height[j];
+            }
+            else{
+                temp_add += current_height - height[j];
+            }
+            --j;
         }
         return res;
     }

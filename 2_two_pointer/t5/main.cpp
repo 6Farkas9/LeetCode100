@@ -10,14 +10,14 @@ public:
     int maxArea(vector<int>& height) {
         int i = 0;
         int j = height.size() - 1;
-        int area = 0;
-        while(i != j){
-            int temp = min(height[i],height[j]) * (j-i);
-            if(temp > area)
-                area = temp;
-            height[i] < height[j] ? i++:j--;
+        int res = 0;
+        while(i < j){
+            int temp = min(height[i], height[j]) * (j - i);
+            if(temp > res)  res = temp;
+            if(height[i] <= height[j])  ++i;
+            else    --j;
         }
-        return area;
+        return res;
     }
 };
 

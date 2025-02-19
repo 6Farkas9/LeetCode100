@@ -1,36 +1,34 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <unordered_set>
 
 using namespace std;
 
-string s = "";
+string s = "abcabcbb";
 
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
         int length = s.size();
-        if(length == 0){
-            return 0;
-        }
-        int i = 0;
-        int j = i + 1;
-        string temp_str = s.substr(i,1);
-        cout << temp_str << endl;
+        if(length == 0) return 0;
+        int i = 0, j = i + 1;
         int res = 1;
-        while(i<length && j<length){
-            int pos = temp_str.find(s[j]);
-            if(pos == -1){
-                temp_str = temp_str + s[j];
+        unordered_set<char> sub_str;
+        sub_str.insert(s[i]);
+        while(i < length && j < length){
+            if(sub_str.find(s[j]) == sub_str.end()){
+                sub_str.insert(s[j]);
+                if(j - i + 1 > res) res = j - i + 1;
             }
             else{
-                res = max(res,int(temp_str.size()));
-                i = i + pos + 1;
-                temp_str = s.substr(i,j-i+1);
+                while(s[i] != s[j]){
+                    sub_str.erase(s[i++]);
+                }
+                ++i;
             }
-            j++;
+            ++j;
         }
-        res = max(res,int(temp_str.size()));
         return res;
     }
 };

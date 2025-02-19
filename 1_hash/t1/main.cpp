@@ -10,18 +10,16 @@ int target = 9;
 class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
-        unordered_map<int,int> un_nums;
+        unordered_map<int,int> data;
         int length = nums.size();
         vector<int> res;
-        for(int i=0; i<length; i++){
-            int this_one = nums[i];
-            auto another_one = un_nums.find(target - this_one);
-            if(another_one != un_nums.end()){
+        for(int i = 0; i < length; i++){
+            if(data.find(target - nums[i]) != data.end()){
+                res.push_back(data[target - nums[i]]);
                 res.push_back(i);
-                res.push_back(another_one->second);
                 break;
             }
-            un_nums[nums[i]] = i;
+            data[nums[i]] = i;
         }
         return res;
     }

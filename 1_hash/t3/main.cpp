@@ -9,22 +9,16 @@ vector<int> nums{0,3,7,2,5,8,4,6,0,1};
 class Solution {
 public:
     int longestConsecutive(vector<int>& nums) {
-        unordered_set<int> num_set;
+        unordered_set<int> data;
         for(int val : nums){
-            num_set.insert(val);
+            data.insert(val);
         }
         int res = 0;
-        for(int val : num_set){
-            if(num_set.find(val - 1) != num_set.end())
-                continue;
-            int current_len = 1;
-            int add_size = 1;
-            while(num_set.find(val + add_size) != num_set.end()){
-                current_len++;
-                add_size++;
-            }
-            if(current_len > res)
-                res = current_len;
+        for(int val : data){
+            if(data.find(val - 1) != data.end())    continue;
+            int length = 1;
+            while(data.find(val + length) != data.end())    length++;
+            if(length > res)    res = length;
         }
         return res;
     }
