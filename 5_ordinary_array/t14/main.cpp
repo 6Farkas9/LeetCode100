@@ -4,33 +4,29 @@
 
 using namespace std;
 
-// vector<vector<int>> intervals{{1,3},{2,6},{8,10},{15,18}};
-vector<vector<int>> intervals{{1,4},{2,3}};
+vector<vector<int>> intervals{{1,3},{2,6},{8,10},{15,18}};
+// vector<vector<int>> intervals{{1,4},{2,3}};
 
 class Solution {
 public:
     vector<vector<int>> merge(vector<vector<int>>& intervals) {
-        sort(intervals.begin(),intervals.end(),cmp);
-        vector<vector<int>> res;
-        int start_t,end_t;
-        for(int i=0; i<intervals.size(); i++){
-            start_t = intervals[i][0];
-            end_t = intervals[i][1];
-            while(i < intervals.size()-1 && !(intervals[i+1][0] > end_t)){
-                start_t = min(intervals[i+1][0],start_t);
-                end_t = max(intervals[i+1][1],end_t);
-                i++;
+        sort(intervals.begin(), intervals.end(), [](const vector<int> &a, const vector<int> &b){
+            if(a[0] == b[0])    return a[1] < b[1];
+            return a[0] < b[0];
+        });
+        vector<vector<int>> ans;
+        int length = intervals.size(), l_p = 0;
+        int start_n, end_n;
+        while(l_p < length){
+            start_n = intervals[l_p][0];
+            end_n = intervals[l_p][1];
+            while(l_p < length && intervals[l_p][0] <= end_n){
+                end_n = max(end_n, intervals[l_p][1]);
+                ++l_p;
             }
-            res.push_back(vector<int>{start_t,end_t});
+            ans.push_back(vector<int>{start_n, end_n});
         }
-        return res;
-    }
-private:
-    static bool cmp(const vector<int>& x, const vector<int>& y){
-        if(x[0] == y[0]){
-            return x[1] < y[1];
-        }
-        return x[0] < y[0];
+        return ans;
     }
 };
 

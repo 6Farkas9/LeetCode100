@@ -9,27 +9,24 @@ vector<vector<int>> matrix{{1,1,2,0},{3,0,5,2},{1,3,1,5}};
 class Solution {
 public:
     void setZeroes(vector<vector<int>>& matrix) {
-        int raw_n = matrix.size();
-        int col_n = matrix[0].size();
-        unordered_set<int> raw,col;
-        int i,j;
-        for(int i = 0; i < raw_n; i++){
-            for(int j = 0; j < col_n; j++){
-                if(matrix[i][j] == 0){
-                    raw.insert(i);
-                    col.insert(j);
+        int m = matrix.size(), n = matrix[0].size();
+        bool col0_0 = false;
+        for(int i = 0; i < m; ++i){
+            if(!matrix[i][0]){
+                col0_0 = true;
+            }
+            for(int j = 1; j < n; ++j){
+                if(!matrix[i][j]){
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
                 }
             }
         }
-        for(auto val_i : raw){
-            for(j = 0; j < col_n; j++){
-                matrix[val_i][j] = 0;
+        for(int i = m - 1; i >= 0; --i){
+            for(int j = 1; j < n; ++j){
+                if(!matrix[i][0] || !matrix[0][j])  matrix[i][j] = 0;
             }
-        }
-        for(auto val_j : col){
-            for(i = 0; i < raw_n; i++){
-                matrix[i][val_j] = 0;
-            }
+            if(col0_0) matrix[i][0] = 0;
         }
     }
 };

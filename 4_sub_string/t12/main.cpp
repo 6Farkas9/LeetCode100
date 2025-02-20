@@ -13,55 +13,35 @@ string t = "abcdd";
 class Solution {
 public:
     string minWindow(string s, string t) {
-        int len_s = s.size();
-        int len_t = t.size();
-        if(len_s < len_t){
-            return "";
-        }
-        unordered_map<char,int> t_num;
-        unordered_map<char,int> w_num;
-        unordered_set<char> t_ele;
-        unordered_set<char> w_ele;
-        for(int i=0;i<len_t;i++){
+        int s_l = s.size(), t_l = t.size();
+        if(t_l > s_l)   return "";
+        int rest_l = t_l;
+        int sub_l = INT_MAX;
+        int start = 0, left_e = 0, right_e = 0;
+        unordered_map<char,int> s_num, t_num;
+        for(int i = 0; i < t_l; ++i){
             t_num[t[i]]++;
-            w_num[t[i]] = 0;
-            t_ele.emplace(t[i]);
         }
-        int win_l = 0;
-        while(win_l<len_s && t_num.find(s[win_l]) == t_num.end()){
-            win_l++;
-        }
-        if(win_l == len_s){
-            return "";
-        }
-        int win_r = win_l;
-        int length = INT_MAX;
-        int res_l = -1;
-        deque<int> all_pos;
-        while(win_r < len_s){
-            if(t_num.find(s[win_r]) != t_num.end()){
-                all_pos.push_back(win_r);
-                w_num[s[win_r]]++;
-                if(w_num[s[win_r]] >= t_num[s[win_r]]){
-                    w_ele.emplace(s[win_r]);
-                }
-                while(t_ele == w_ele){
-                    int temp_length = win_r - win_l + 1;
-                    if(temp_length < length){
-                        length = temp_length;
-                        res_l = win_l;
+        while(right_e < s_l){
+            ++s_num[s[right_e]];
+            if(t_num.find(s[right_e]) != t_num.end()){
+                if(s_num[s[right_e]] == t_num[s[right_e]])  rest_l -= t_num[s[right_e]];
+                if(rest_l == 0){
+                    while(true){
+                        if(t_num.find(s[left_e]) != t_num.end() && s_num[s[left_e]] == t_num[s[left_e]])    break;
+                        --s_num[s[left_e]];
+                        ++left_e;
                     }
-                    w_num[s[all_pos.front()]]--;
-                    if(w_num[s[all_pos.front()]] < t_num[s[all_pos.front()]]){
-                        w_ele.erase(s[all_pos.front()]);
-                    }
-                    all_pos.pop_front();
-                    win_l = all_pos.front();
+                    if(right_e - left_e + 1 < sub_l){
+                        sub_l = right_e - left_e + 1;
+                        start = left_e;
+                    }    
                 }
             }
-            win_r++;
+            ++right_e;
         }
-        return res_l == -1?string():s.substr(res_l,length);
+        sub_l = sub_l == INT_MAX ? 0 : sub_l;
+        return s.substr(start, sub_l);
     }
 };
 

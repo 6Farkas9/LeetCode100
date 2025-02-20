@@ -4,37 +4,34 @@
 
 using namespace std;
 
-vector<int> nums{-1,1,0,-3,3};
+vector<int> nums{1,2,3,4};
 //               1,2,12,4
 //                 j  i
 class Solution {
 public:
     vector<int> productExceptSelf(vector<int>& nums) {
         int length = nums.size();
-        vector<int> res(length,1);
-        int left = 1,right = 1;
-        int i,j;
-        for(i = 0,j = length - 1; i < length; i++,j--){
+        vector<int> ans(length, 1);
+        int ans_i = 1, ans_j = 1;
+        for(int i = 0, j = length - 1; i < length && j >= 0; ++i, --j){
             if(i < j){
-                left *= nums[i];
-                right *= nums[j];
-                res[i] = left;
-                res[j] = right;
+                ans_i = ans_i * nums[i];
+                ans_j = ans_j * nums[j];
+                ans[i] = ans_i;
+                ans[j] = ans_j;
+            }
+            else if(j == 0){
+                ans[i] = ans_i;
+                ans[j] = ans_j;
             }
             else{
-                if(j == 0){
-                    res[i] = left;
-                    res[j] = right;
-                }
-                else{
-                    res[i] = left * res[i+1];
-                    res[j] = right * res[j-1];
-                    left *= nums[i];
-                    right *= nums[j];
-                }
+                ans[i] = ans_i * ans[i + 1];
+                ans[j] = ans_j * ans[j - 1];
+                ans_i = ans_i * nums[i];
+                ans_j = ans_j * nums[j];
             }
         }
-        return res;
+        return ans;
     }
 };
 

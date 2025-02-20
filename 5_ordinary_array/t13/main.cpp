@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-
 #include <limits.h>
 
 using namespace std;
@@ -10,16 +9,16 @@ vector<int> nums{-2,1,-3,4,-1,2,1,-5,4};
 class Solution {
 public:
     int maxSubArray(vector<int>& nums) {
-        int temp_len = nums[0];
-        int res = temp_len;
-        int n_len = nums.size();
-        for(int i=1; i<n_len; i++){
-            temp_len = nums[i] + max(0 , temp_len);
-            if(temp_len > res){
-                res = temp_len;
-            }
+        int length = nums.size();
+        int last_max = nums[0];
+        int ans = last_max;
+        int temp;
+        for(int i = 1; i < length; ++i){
+            temp = nums[i] + max(0, last_max);
+            ans = max(ans, temp);
+            last_max = temp;
         }
-        return res;
+        return ans;
     }
 };
 

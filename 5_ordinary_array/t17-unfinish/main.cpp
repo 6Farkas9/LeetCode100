@@ -8,7 +8,6 @@ vector<int> nums{3,4,-1,1};
 class Solution {
 public:
     int firstMissingPositive(vector<int>& nums) {
-        int left,right;
         
     }
 };

@@ -13,22 +13,14 @@ int target = 1;
 class Solution {
 public:
     bool searchMatrix(vector<vector<int>>& matrix, int target) {
-        if(target < matrix[0][0])
-            return false;
-        int m = matrix.size();
-        int n = matrix[0].size();
-        if(target > matrix[m-1][n-1])
-            return false;
-        int i = 0, j = n - 1;
-        while(i < m && j >= 0){
-            if(matrix[i][j] == target)
-                return true;
-            else if(matrix[i][j] > target){
-                j--;
-            }
-            else{
-                i++;
-            }
+        int m = matrix.size() - 1;
+        int n = matrix[0].size() - 1;
+        if(target > matrix[m][n] || target < matrix[0][0])  return false;
+        int i = 0, j = n;
+        while(i <= m && j >= 0){
+            if(target == matrix[i][j])  return true;
+            else if(target > matrix[i][j])  i++;
+            else    j--;
         }
         return false;
     }
