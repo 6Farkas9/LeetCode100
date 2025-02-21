@@ -4,7 +4,7 @@
 using namespace std;
 
 vector<int> head_int = {1,2,3,4,5};
-int k = 5;
+int k = 2;
 
 /**
  * Definition for singly-linked list.
@@ -28,35 +28,32 @@ int val;
 class Solution {
 public:
     ListNode* reverseKGroup(ListNode* head, int k) {
-        if(!head || k == 1){
-            return head;
-        }
-        ListNode *iter1, *iter2, *c_start = head, *c_end, *pre_start;
-        ListNode dummy;
-        dummy.next = head;
-        pre_start = &dummy;
-        while(c_start){
-            int i = 0;
-            c_end = c_start;
-            for(; i < k; i++){
-                if(!c_end)
-                    return dummy.next;
-                c_end = c_end->next;
+        ListNode *dummy = new ListNode(), *p, *q, *temp;
+        dummy->next = head;
+        p = dummy, q = head;
+        while(q){
+            for(int i = 0; i < k; ++i){
+                if(!q)  return dummy->next;
+                q = q->next;
             }
-            iter1 = c_start;
-            iter2 = c_start->next;
-            while(iter2 != c_end){
-                c_start->next = iter2->next;
-                iter2->next = iter1;
-                iter1 = iter2;
-                iter2 = c_start->next;
-            }
-            pre_start->next = iter1;
-            c_start->next = c_end;
-            pre_start = c_start;
-            c_start = c_end;
+            temp = p->next;
+            p->next = reverseListTo(p->next, q);
+            p = temp;
         }
-        return dummy.next;
+        return dummy->next;
+    }
+private:
+    ListNode* reverseListTo(ListNode* head, ListNode* _end) {
+        if(!head || !head->next)   return head;
+        ListNode *pc = head, *pn = head->next;
+        while(pn != _end){
+            head->next = pn->next;
+            pn->next = pc;
+            pc = pn;
+            pn = head->next;
+        }
+        head->next = _end;
+        return pc;
     }
 };
 
@@ -77,6 +74,7 @@ int main(){
     cout << endl;
     Solution A;
     ListNode *res = A.reverseKGroup(head.next, k);
+    // ListNode *res = A.reverseListTo(head.next, nullptr);
     while(res){
         cout << res->val << " ";
         res = res->next;

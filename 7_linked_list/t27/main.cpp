@@ -25,35 +25,22 @@ int val;
 class Solution {
 public:
     ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
-        ListNode res;
-        ListNode* ptr1 = list1,*ptr2 = list2,*lastone = &res;
-        while(ptr1 && ptr2){
-            if(ptr1->val < ptr2->val){
-                lastone->next = ptr1;
-                ptr1 = ptr1->next;
+        ListNode *dummy = new ListNode();
+        ListNode *p1 = list1, *p2 = list2, *p = dummy;
+        while(p1 && p2){
+            if(p1->val <= p2->val){
+                p->next = p1;
+                p1 = p1->next;
             }
             else{
-                lastone->next = ptr2;
-                ptr2 = ptr2->next;
+                p->next = p2;
+                p2 = p2->next;
             }
-            lastone = lastone->next;
+            p = p->next;
         }
-        while(ptr1){
-            lastone->next = ptr1;
-            ptr1 = ptr1->next;
-            lastone = lastone->next;
-        }
-        while(ptr2){
-            lastone->next = ptr2;
-            ptr2 = ptr2->next;
-            lastone = lastone->next;
-        }
-        if(res.next){
-            return res.next;
-        }
-        else{
-            return NULL;
-        }
+        if(p1)  p->next = p1;
+        if(p2)  p->next = p2;
+        return dummy->next;
     }
 };
 

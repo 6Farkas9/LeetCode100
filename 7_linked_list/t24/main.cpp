@@ -14,7 +14,7 @@ using namespace std;
  * };
  */
 
-vector<int> head_int = {2};
+vector<int> head_int = {1,2,2,1};
 
 struct ListNode {
     int val;
@@ -27,31 +27,33 @@ struct ListNode {
 class Solution {
 public:
     bool isPalindrome(ListNode* head) {
-        if(!head)
-            return false;
-        int num = 0;
-        ListNode* temp_head = head;
-        while(temp_head){
-            num++;
-            temp_head = temp_head->next;
+        if(!head->next) return true;
+        if(!head->next->next){
+            return head->val == head->next->val;
         }
-        int num_half = num / 2;
-        temp_head = head;
-        ListNode* temp_tail = head->next;
-        for(int i = 1; i < num_half; i++){
-            head->next = temp_tail->next;
-            temp_tail->next = temp_head;
-            temp_head = temp_tail;
-            temp_tail = head->next;
-            head->next = NULL;
+        ListNode *fast = head, *slow = head, *slow_next = head->next;
+        while(true){
+            if(!fast->next){
+                fast = slow_next;
+                slow = slow->next;
+                break;
+            }
+            else if(!fast->next->next){
+                fast = slow_next;
+                break;
+            }
+            else{
+                fast = fast->next->next;
+                head->next = slow_next->next;
+                slow_next->next = slow;
+                slow = slow_next;
+                slow_next = head->next;
+            }
         }
-        if(num % 2 == 1 && num != 1)
-            temp_tail = temp_tail->next;
-        while(temp_tail != NULL){
-            if(temp_head->val != temp_tail->val)
-                return false;
-            temp_head = temp_head->next;
-            temp_tail = temp_tail->next;
+        while(fast){
+            if(slow->val != fast->val)  return false;
+            slow = slow->next;
+            fast = fast->next;
         }
         return true;
     }
@@ -70,6 +72,12 @@ int main(){
             temp->next = NULL;
         }
     }
+    temp = &head;
+    while(temp){
+        cout << temp->val << " ";
+        temp = temp->next;
+    }
+    cout << endl;
     Solution A;
     bool res = A.isPalindrome(&head);
     cout << res << endl;

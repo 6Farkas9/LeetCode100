@@ -21,17 +21,17 @@ struct ListNode {
 class Solution {
 public:
     bool hasCycle(ListNode *head) {
-        if(!head)
-            return false;
-        ListNode* tail = head;
-        ListNode* t_next = head->next;
-        while(t_next != NULL){
-            if(t_next == head)
-                return true;
-            head->next = t_next->next;
-            t_next->next = tail;
-            tail = t_next;
-            t_next = head->next;
+        if(!head)   return false;
+        ListNode *fast = head, *slow = head;
+        bool isfirst = true;
+        while(true){
+            if(fast == slow){
+                if(!isfirst)    return true;
+                else    isfirst = false;
+            }
+            if(!fast->next || !fast->next->next)    break;
+            fast = fast->next->next;
+            slow = slow->next;
         }
         return false;
     }

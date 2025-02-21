@@ -21,24 +21,20 @@ struct ListNode {
 class Solution {
 public:
     ListNode *detectCycle(ListNode *head) {
-        if(!head)
-            return NULL;
-        ListNode* slow_ptr = head, *fast_ptr = head;
+        if(!head)   return nullptr;
+        ListNode *fast = head, *slow = head;
+        bool isfirst = true;
         do{
-            if(slow_ptr->next && fast_ptr->next && fast_ptr->next->next){
-                slow_ptr = slow_ptr->next;
-                fast_ptr = fast_ptr->next->next;
-            }
-            else{
-                return NULL;
-            }
-        }while(slow_ptr != fast_ptr);
-        fast_ptr = head;
-        while(fast_ptr != slow_ptr){
-            fast_ptr = fast_ptr->next;
-            slow_ptr = slow_ptr->next;
+            if(!fast->next || !fast->next->next)    return nullptr;
+            fast = fast->next->next;
+            slow = slow->next;
+        }while(fast != slow);
+        fast = head;
+        while(fast != slow){
+            fast = fast->next;
+            slow = slow->next;
         }
-        return fast_ptr;
+        return fast; 
     }
 };
 

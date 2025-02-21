@@ -25,27 +25,19 @@ int val;
 class Solution {
 public:
     ListNode* swapPairs(ListNode* head) {
-        if(!head || !head->next)
-            return head;
-        ListNode *ptr1 = head, *ptr2 = head->next, *lastone, *temp;
-        ListNode dummy;
-        dummy.next = head;
-        lastone = &dummy;
-        while(true){
-            temp = ptr2->next;
-            lastone->next = ptr2;
-            ptr2->next = ptr1;
-            ptr1->next = temp;
-            if(temp && temp->next){
-                lastone = ptr1;
-                ptr1 = temp;
-                ptr2 = temp->next;
-            }
-            else{
-                break;
-            }
+        if(!head || !head->next)    return head;
+        ListNode *dummy = new ListNode(), *p, *q;
+        dummy->next = head;
+        p = dummy, q = head;
+        while(q && q->next){
+            ListNode *temp = q->next->next;
+            q->next->next = q;
+            p->next = q->next;
+            q->next = temp;
+            p = q;
+            q = q->next;
         }
-        return dummy.next;
+        return  dummy->next;
     }
 };
 

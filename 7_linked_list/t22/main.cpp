@@ -12,37 +12,35 @@ struct ListNode {
 class Solution {
 public:
     ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
-        int num_a = 0,num_b = 0;
-        ListNode* tail_A = headA;
-        while(tail_A->next != NULL){
-            tail_A = tail_A->next;
-            num_a++;
+        int a_l = 1, b_l = 1;
+        ListNode *a_ptr = headA, *b_ptr = headB;
+        while(a_ptr->next){
+            ++a_l;
+            a_ptr = a_ptr->next;
         }
-        ListNode* tail_B = headB;
-        while(tail_B->next != NULL){
-            tail_B = tail_B->next;
-            num_b++;
+        while(b_ptr->next){
+            ++b_l;
+            b_ptr = b_ptr->next;
         }
-        if(tail_A == tail_B){
-            tail_A = headA;
-            tail_B = headB;
-            while(num_a > num_b){
-                tail_A = tail_A->next;
-                num_a--;
+        if(a_ptr != b_ptr)  return nullptr;
+        a_ptr = headA, b_ptr = headB;
+        if(a_l > b_l){
+            while(a_l > b_l){
+                --a_l;
+                a_ptr = a_ptr->next;
             }
-            while(num_a < num_b){
-                tail_B = tail_B->next;
-                num_b--;
-            }
-            while(tail_A != tail_B){
-                tail_A = tail_A->next;
-                tail_B = tail_B->next;
-            }
-            return tail_A;
         }
-        else{
-            return NULL;
+        else if(a_l < b_l){
+            while(a_l < b_l){
+                --b_l;
+                b_ptr = b_ptr->next;
+            }
         }
+        while(a_ptr != b_ptr){
+            a_ptr = a_ptr->next;
+            b_ptr = b_ptr->next;
+        }
+        return  a_ptr;
     }
 };
 

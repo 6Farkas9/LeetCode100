@@ -25,49 +25,31 @@ int val;
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode res;
-        ListNode *ptr1 = l1, *ptr2 = l2, *lastone = &res, *temp_ptr = NULL;
-        int fromlast = 0,temp;
-        while(ptr1 && ptr2){
-            temp = ptr1->val + ptr2->val + fromlast;
-            if(temp >= 10){
-                fromlast = 1;
-            }
-            else{
-                fromlast = 0;
-            }
-            temp = temp % 10;
-            ptr1->val = temp;
-            lastone->next = ptr1;
-            lastone = lastone->next;
-            ptr1 = ptr1->next;
-            ptr2 = ptr2->next;
+        ListNode *dummy = new ListNode();
+        ListNode *p1 = l1, *p2 = l2, *p = dummy;
+        int carry = 0, temp;
+        while(p1 && p2){
+            temp = carry + p1->val + p2->val;
+            carry = temp >= 10 ? 1 : 0;
+            temp = temp >= 10 ? temp % 10 : temp;
+            p->next = new ListNode(temp);
+            p1 = p1->next;
+            p2 = p2->next;
+            p = p->next;
         }
-        if(ptr1)
-            temp_ptr = ptr1;
-        if(ptr2){
-            temp_ptr = ptr2;
+        if(p2)  p1 = p2;
+        while(p1){
+            temp = carry + p1->val;
+            carry = temp >= 10 ? 1 : 0;
+            temp = temp >= 10 ? temp % 10 : temp;
+            p->next = new ListNode(temp);
+            p1 = p1->next;
+            p = p->next;
         }
-        while(temp_ptr){
-            temp = temp_ptr->val + fromlast;
-            if(temp >= 10){
-                fromlast = 1;
-            }
-            else{
-                fromlast = 0;
-            }
-            temp = temp % 10;
-            temp_ptr->val = temp;
-            lastone->next = temp_ptr;
-            lastone = lastone->next;
-            temp_ptr = temp_ptr->next;
+        if(carry){
+            p->next = new ListNode(1);
         }
-        if(fromlast){
-            l2->val = 1;
-            l2->next = NULL;
-            lastone->next = l2;
-        }
-        return res.next;
+        return dummy->next;
     }
 };
 
