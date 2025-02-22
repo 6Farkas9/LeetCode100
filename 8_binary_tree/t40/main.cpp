@@ -30,6 +30,16 @@ class Solution
 {
 public:
     int diameterOfBinaryTree(TreeNode *root){
-        
+        int ans = 0;
+        maxDepth(root, ans);
+        return ans;
+    }
+private:
+    int maxDepth(TreeNode* &root, int &len){
+        if(!root)   return 0;
+        int left_depth = maxDepth(root->left, len);
+        int right_depth = maxDepth(root->right, len);
+        len = max(len, left_depth + right_depth);
+        return max(left_depth, right_depth) + 1;
     }
 };
