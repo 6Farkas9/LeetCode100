@@ -4,8 +4,6 @@
 
 using namespace std;
 
-vector<int> nums = {-10,-3,0,5,9};
-
 /**
  * Definition for a binary tree node.
  * struct TreeNode {
@@ -29,29 +27,36 @@ struct TreeNode {
 
 class Solution {
 public:
-    TreeNode* sortedArrayToBST(vector<int>& nums) {
-        int length = nums.size();
-        TreeNode *res = NULL;
-        createBSF(nums, 0, length - 1, res);
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if(!root){
+            return res;
+        }
+        TreeNode *last_end = root, *ptr = root, *next_end, *temp;
+        queue<TreeNode*> nodes;
+        nodes.push(root);
+        int layer = 0;
+        while(!nodes.empty()){
+            res.push_back(vector<int>());
+            while(true){
+                temp = nodes.front();
+                nodes.pop();
+                res[layer].push_back(temp->val);
+                if(temp->left){
+                    next_end = temp->left;
+                    nodes.push(temp->left);
+                }
+                if(temp->right){
+                    next_end = temp->right;
+                    nodes.push(temp->right);
+                }
+                if(temp == last_end){
+                    last_end = next_end;
+                    break;
+                }
+            }
+            layer++;
+        }
         return res;
     }
-private:
-    void createBSF(vector<int> & nums, int left, int right, TreeNode* &root){
-        if(left > right){
-            return;
-        }
-        int mid = (left + right) / 2;
-        root = new TreeNode(nums[mid]);
-        createBSF(nums, left, mid - 1, root->left);
-        createBSF(nums, mid + 1, right, root->right);
-    }
 };
-
-int main(){
-    Solution A;
-    TreeNode *res = A.sortedArrayToBST(nums);
-    if(res)
-        cout << res->val << endl;
-    else
-        cout << "?" << endl;
-}

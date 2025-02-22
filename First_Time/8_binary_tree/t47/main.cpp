@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
+#include <queue>
 #include <unordered_map>
-#include <stack>
 
 using namespace std;
 
@@ -28,27 +28,30 @@ struct TreeNode {
 
 class Solution {
 public:
-    int pathSum(TreeNode* root, int targetSum) {
-        this->pre_sum[0] = 1;
-        return dfsSum(root,0,targetSum);
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        int length = preorder.size();
+        for(int i = 0; i < length; i++)
+            this->in_pos[inorder[i]] = i;
+        return build(preorder, inorder, 0, length - 1, 0, length - 1);
     }
 private:
-    unordered_map<long long, int> pre_sum;
-    int dfsSum(TreeNode *root, long long last_sum, int targetSum){
-        if(!root){
-            return 0;
+    unordered_map<int,int> in_pos;
+
+    TreeNode* build(vector<int>& preorder, vector<int>& inorder, int pre_start, int pre_end, int in_start, int in_end){
+        if(pre_start == pre_end){
+            return new TreeNode(preorder[pre_start]);
         }
-        int res = 0;
-        long long current_sum = last_sum + root->val;
-        long long current_target = current_sum - targetSum;
-        if(this->pre_sum.find(current_target) != this->pre_sum.end()){
-            res += this->pre_sum[current_target];
+        int root_val = preorder[pre_start];
+        TreeNode *root = new TreeNode(root_val);
+        int in_root_pos = this->in_pos[root_val];
+        int length = in_root_pos - in_start;
+        if(in_root_pos != in_start){
+            root->left = build(preorder, inorder, pre_start + 1, pre_start + length, in_start, in_root_pos - 1);
         }
-        pre_sum[current_sum]++;
-        res += dfsSum(root->left, current_sum, targetSum);
-        res += dfsSum(root->right, current_sum, targetSum);
-        pre_sum[current_sum]--;
-        return res;
+        if(in_root_pos != in_end){
+            root->right = build(preorder, inorder, pre_start + length + 1, pre_end, in_root_pos + 1, in_end);
+        }
+        return root;
     }
 };
 

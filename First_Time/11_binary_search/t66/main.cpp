@@ -5,25 +5,46 @@
 
 using namespace std;
 
-vector<int> nums = {3,1,2};
+vector<int> nums = {1};
+int target = 0;
 
 class Solution {
 public:
-    int findMin(vector<int>& nums) {
+    int search(vector<int>& nums, int target) {
         int length = nums.size() - 1;
         int i = 0,j = length;
-        int mid;
-        while(i < j){
+        int mid,k;
+        while(i <= j){
             mid = (i + j) / 2;
-            if(nums[mid] < nums[length])  j = mid;
-            else i = mid + 1;
+            cout << i << "," << j << "," << mid << endl;
+            if(nums[mid] == target) return mid;
+            if(mid + 1 > length || nums[mid] > nums[mid+1]) break;
+            if(nums[mid] > nums[length])    i = mid + 1;
+            else    j = mid - 1;
         }
-        return nums[mid];
+        k = mid;
+        i = 0;
+        j = k;
+        while(i <= j){
+            mid = (i + j) / 2;
+            if(nums[mid] == target) return mid;
+            if(nums[mid] > target)  j = mid - 1;
+            else    i = mid + 1;
+        }
+        i = k+1;
+        j = length;
+        while(i <= j){
+            mid = (i + j) / 2;
+            if(nums[mid] == target) return mid;
+            if(nums[mid] > target)  j = mid - 1;
+            else    i = mid + 1;
+        }
+        return -1;
     }
 };
 
 int main(){
     Solution A;
-    int res =  A.findMin(nums);
+    int res =  A.search(nums, target);
     cout << res << endl;
 }

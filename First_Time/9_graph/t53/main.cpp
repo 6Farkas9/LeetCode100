@@ -6,67 +6,44 @@
 
 using namespace std;
 
-/**
- * Your Trie object will be instantiated and called as such:
- * Trie* obj = new Trie();
- * obj->insert(word);
- * bool param_2 = obj->search(word);
- * bool param_3 = obj->startsWith(prefix);
- */
-
-class Trie {
+class Solution {
 public:
-    Trie() {
-        this->head = new TreeNode;
-        this->head->is_tail = false;
-    }
-    
-    void insert(string word) {
-        int length = word.size();
-        int i = 0;
-        TreeNode *ptr = this->head;
-        while(ptr->next.find(word[i]) != ptr->next.end() && i < length){
-            ptr = ptr->next[word[i++]];
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        int pre_num = prerequisites.size();
+        if(pre_num == 0) return true;
+        for(int i = 0; i < pre_num; i++){
+            int pre = prerequisites[i][1];
+            int aft = prerequisites[i][0];
+            if(pre == aft) return false;
+            visited[pre] = 0;
+            visited[aft] = 0;
+            graph[aft].emplace(pre);
         }
-        while(i < length){
-            TreeNode *temp = new TreeNode;
-            temp->is_tail = false;
-            ptr->next[word[i]] = temp;
-            ptr = ptr->next[word[i++]];
+        for(auto point : visited){
+            if(!point.second){
+                if(!dfs(point.first)) return false;
+            }
         }
-        ptr->is_tail = true;
-    }
-    
-    bool search(string word) {
-        int length = word.size();
-        int i = 0;
-        TreeNode *ptr = this->head;
-        while(ptr->next.find(word[i]) != ptr->next.end() && i < length){
-            ptr = ptr->next[word[i++]];
-        }
-        if(i == length && ptr->is_tail) return true;
-        else return false;
-    }
-    
-    bool startsWith(string prefix) {
-        int length = prefix.size();
-        int i = 0;
-        TreeNode *ptr = this->head;
-        while(ptr->next.find(prefix[i]) != ptr->next.end() && i < length){
-            ptr = ptr->next[prefix[i++]];
-        }
-        if(i == length) return true;
-        else return false;
+        return true;
     }
 private:
-    typedef struct TreeNode{
-        unordered_map<char,TreeNode*> next;
-        bool is_tail;
-    }TreeNode;
-    TreeNode* head;
+    unordered_map<int,unordered_set<int>> graph;
+    unordered_map<int,int> visited;
+    bool dfs(int pos){
+        visited[pos] = 1;
+        for(int val : graph[pos]){
+            if(visited[val] == 0){
+                if(!dfs(val)) return false;
+            }
+            else if(visited[val] == 1)
+                return false;
+        }
+        visited[pos] = 2;
+        return true;
+    }
 };
 
 int main(){
-    // Solution A;
+    Solution A;
     // cout << A.canFinish(grid) << endl;;
 }

@@ -5,39 +5,39 @@
 
 using namespace std;
 
-vector<int> nums = {1};
-int target = 0;
+vector<int> nums = {};
+int target = 6;
 
 class Solution {
 public:
-    int search(vector<int>& nums, int target) {
+    vector<int> searchRange(vector<int>& nums, int target) {
+        vector<int> ans = {-1,-1};
         int length = nums.size() - 1;
-        int i = 0,j = length;
-        int mid,k;
-        while(i <= j){
-            mid = (i + j) / 2;
-            cout << i << "," << j << "," << mid << endl;
-            if(nums[mid] == target) return mid;
-            if(mid + 1 > length || nums[mid] > nums[mid+1]) break;
-            if(nums[mid] > nums[length])    i = mid + 1;
-            else    j = mid - 1;
+        int has_target = searchPos(nums, target, 0, length);
+        if(has_target == -1)    return ans;
+        int left_edge = has_target - 1;
+        int right_edge = has_target + 1;
+        while(true){
+            has_target = searchPos(nums, target, 0, left_edge);
+            if(has_target == -1) break;
+            left_edge = has_target - 1;
         }
-        k = mid;
-        i = 0;
-        j = k;
-        while(i <= j){
-            mid = (i + j) / 2;
-            if(nums[mid] == target) return mid;
-            if(nums[mid] > target)  j = mid - 1;
-            else    i = mid + 1;
+        ans[0] = left_edge + 1;
+        while(true){
+            has_target = searchPos(nums, target, right_edge, length);
+            if(has_target == -1) break;
+            right_edge = has_target + 1;
         }
-        i = k+1;
-        j = length;
+        ans[1] = right_edge - 1;
+        return ans;
+    }
+private:
+    int searchPos(vector<int>& nums, int target, int i, int j){
         while(i <= j){
-            mid = (i + j) / 2;
+            int mid = (i + j) / 2;
             if(nums[mid] == target) return mid;
-            if(nums[mid] > target)  j = mid - 1;
-            else    i = mid + 1;
+            else if(nums[mid] > target) j = mid - 1;
+            else i = mid + 1;
         }
         return -1;
     }
@@ -45,6 +45,6 @@ public:
 
 int main(){
     Solution A;
-    int res =  A.search(nums, target);
-    cout << res << endl;
+    auto res =  A.searchRange(nums, target);
+    cout << "[" << res[0] << "," << res[1] << "]" << endl;
 }

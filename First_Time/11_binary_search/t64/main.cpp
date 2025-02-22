@@ -5,46 +5,37 @@
 
 using namespace std;
 
-vector<int> nums = {};
-int target = 6;
+vector<vector<int>> matrix = {
+    {1,3,5,7},
+    {10,11,16,20},
+    {23,30,34,60}
+};
+int target = 15;
 
 class Solution {
 public:
-    vector<int> searchRange(vector<int>& nums, int target) {
-        vector<int> ans = {-1,-1};
-        int length = nums.size() - 1;
-        int has_target = searchPos(nums, target, 0, length);
-        if(has_target == -1)    return ans;
-        int left_edge = has_target - 1;
-        int right_edge = has_target + 1;
-        while(true){
-            has_target = searchPos(nums, target, 0, left_edge);
-            if(has_target == -1) break;
-            left_edge = has_target - 1;
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        int m = matrix.size();
+        int n = matrix[0].size() - 1;
+        int row;
+        for(row = 0; row < m; row++){
+            if(matrix[row][0] <= target && target <= matrix[row][n]) break;
         }
-        ans[0] = left_edge + 1;
-        while(true){
-            has_target = searchPos(nums, target, right_edge, length);
-            if(has_target == -1) break;
-            right_edge = has_target + 1;
-        }
-        ans[1] = right_edge - 1;
-        return ans;
-    }
-private:
-    int searchPos(vector<int>& nums, int target, int i, int j){
+        if(row >= m) return false;
+        int i = 0,j = n;
+        int mid;
         while(i <= j){
-            int mid = (i + j) / 2;
-            if(nums[mid] == target) return mid;
-            else if(nums[mid] > target) j = mid - 1;
+            mid = (i + j) / 2;
+            if(matrix[row][mid] == target) return true;
+            else if(matrix[row][mid] > target) j = mid - 1;
             else i = mid + 1;
         }
-        return -1;
+        return false;
     }
 };
 
 int main(){
     Solution A;
-    auto res =  A.searchRange(nums, target);
-    cout << "[" << res[0] << "," << res[1] << "]" << endl;
+    auto res =  A.searchMatrix(matrix, target);
+    cout << res << endl;
 }

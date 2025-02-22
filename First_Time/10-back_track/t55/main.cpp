@@ -10,34 +10,40 @@ vector<int> nums = {1,2,3};
 
 class Solution {
 public:
-    vector<vector<int>> subsets(vector<int>& nums) {
-        int length = nums.size();
-        subsetsRecursion(nums, 0, length);
-        return this->ans;
+    vector<vector<int>> permute(vector<int>& nums) {
+        permute_recursion(nums, 0, nums.size() - 1);
+        return ans;
     }
 private:
     vector<vector<int>> ans;
-    vector<int> current;
-    void subsetsRecursion(vector<int>& nums, int i, int & length){
-        if(i == length){
-            ans.push_back(current);
+    void permute_recursion(vector<int>& nums, int i, int j){
+        if(i == j){
+            vector<int> temp = nums;
+            ans.push_back(temp);
             return;
         }
-        current.push_back(nums[i]);
-        subsetsRecursion(nums, i+1, length);
-        current.pop_back();
-        subsetsRecursion(nums, i+1, length);
+        int k = i;
+        while(k <= j){
+            swap(nums[i], nums[k]);
+            for(int val : nums) cout << val << " ";
+            cout << ";";
+            permute_recursion(nums, i + 1, j);
+            swap(nums[i], nums[k]);
+            for(int val : nums) cout << val << " ";
+            cout << endl;
+            k++;
+        }
     }
 };
 
 int main(){
     Solution A;
-    vector<vector<int>> res = A.subsets(nums);
-    cout << res.size() << endl;
-    for(auto len : res){
-        for(auto val : len){
-            cout << val << " ";
-        }
-        cout << endl;
-    }
+    vector<vector<int>> res = A.permute(nums);
+//     cout << res.size() << endl;
+//     for(auto len : res){
+//         for(auto val : len){
+//             cout << val << " ";
+//         }
+//         cout << endl;
+//     }
 }

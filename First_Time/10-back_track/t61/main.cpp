@@ -5,50 +5,43 @@
 
 using namespace std;
 
-int n = 9;
+string s = "abbab";
 
 class Solution {
 public:
-    vector<vector<string>> solveNQueens(int n) {
-        this->current_queen.assign(n, -1);
-        this->n_origin = n;
-        recursion(0,0,0,0);
+    vector<vector<string>> partition(string s) {
+        int length = s.size();
+        vector<vector<bool>> judge(length,vector<bool>(length,true));
+        for(int k = length - 1; k > 0; k--){
+            for(int i = 0,j = length - k; j < length; i++,j++){
+                judge[i][j] = (judge[i+1][j-1] && s.at(i) == s.at(j));
+            }
+        }
+        recursion(s, judge, 0, length);
         return this->ans;
     }
 private:
-    int n_origin;
     vector<vector<string>> ans;
-    vector<int> current_queen;
-    void recursion(int row, int colmuns, int diagonals1, int diagonals2){
-        if(row == this->n_origin){
-            generateAns();
+    vector<string> current;
+    void recursion(string & s, vector<vector<bool>> & judge, int i, int & length){
+        if(i >= length){
+            this->ans.push_back(this->current);
             return;
         }
-        int available_pos = ((1 << this->n_origin) - 1) & (~(colmuns | diagonals1 | diagonals2));
-        while(available_pos != 0){
-            int pos_bit = available_pos & (-available_pos);
-            available_pos = available_pos & (available_pos - 1);
-            int pos_int = __builtin_ctz(pos_bit);
-            this->current_queen[row] = pos_int;
-            recursion(row+1, colmuns | pos_bit, (diagonals1 | pos_bit) >> 1, (diagonals2 | pos_bit) << 1);
-            this->current_queen[row] = -1;
+        int j = i;
+        for(; j < length; j++){
+            if(judge[i][j]){
+                this->current.push_back(s.substr(i,j-i+1));
+                recursion(s, judge, j+1, length);
+                this->current.pop_back();
+            }
         }
-    }
-    void generateAns(){
-        vector<string> temp;
-        for(int i = 0; i < this->n_origin; i++){
-            string temp_str;
-            temp_str.resize(this->n_origin, '.');
-            temp_str[this->current_queen[i]] = 'Q';
-            temp.push_back(temp_str);
-        }
-        this->ans.push_back(temp);
     }
 };
 
 int main(){
     Solution A;
-    vector<vector<string>> res =  A.solveNQueens(n);
+    vector<vector<string>> res =  A.partition(s);
     cout << res.size() << endl;
     for(auto len : res){
         for(auto str : len){

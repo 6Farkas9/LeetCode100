@@ -5,50 +5,47 @@
 
 using namespace std;
 
-vector<int> candidates = {2};
-int target = 1;
+string digits = "";
 
 class Solution {
 public:
-    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
-        this->current_sum = 0;
-        int length =  candidates.size();
-        this->target = target;
-        recursion(candidates, 0, length);
+    vector<string> letterCombinations(string digits) {
+        int length = digits.size();
+        if(!length)
+            return this->ans;
+        recursion(digits, 0, length);
         return this->ans;
     }
 private:
-    vector<vector<int>> ans;
-    vector<int> current;
-    int current_sum;
-    int target;
-    void recursion(vector<int>& candidates, int i, int & length){
-        if(i >= length) return;
-        this->current.push_back(candidates[i]);
-        this->current_sum += candidates[i];
-        if(this->current_sum == this->target){
+    vector<string> ans;
+    string current;
+    unordered_map<char,vector<char>> table = {
+        {'2' , {'a','b','c'}},
+        {'3' , {'d','e','f'}},
+        {'4' , {'g','h','i'}},
+        {'5' , {'j','k','l'}},
+        {'6' , {'m','n','o'}},
+        {'7' , {'p','q','e','s'}},
+        {'8' , {'t','u','v'}},
+        {'9' , {'w','x','y','z'}}
+    };
+    void recursion(string & digits, int i, int & length){
+        if(i == length){
             this->ans.push_back(this->current);
+            return;
         }
-        else if(this->current_sum < this->target){
-            recursion(candidates, i, length);
-            for(int j = 1; i+j < length; j++)
-                recursion(candidates, i+j, length);
+        char current_int = digits[i];
+        for(char ch : table[current_int]){
+            this->current.push_back(ch);
+            recursion(digits, i+1, length);
+            this->current.pop_back();
         }
-        this->current.pop_back();
-        this->current_sum -= candidates[i];
-        if(!this->current.size() && i+1 < length)
-            recursion(candidates, i+1, length);
     }
 };
 
 int main(){
     Solution A;
-    vector<vector<int>> res = A.combinationSum(candidates,target);
+    vector<string> res = A.letterCombinations(digits);
     cout << res.size() << endl;
-    for(auto len : res){
-        for(auto val : len){
-            cout << val << " ";
-        }
-        cout << endl;
-    }
+    for(auto str : res) cout << str << endl;
 }

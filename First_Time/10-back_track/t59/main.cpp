@@ -1,58 +1,53 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <unordered_set>
+#include <unordered_map>
 
 using namespace std;
 
-vector<vector<char>> board = {
-    {'A','B','C','E'},
-    {'S','F','C','S'},
-    {'A','D','E','E'}
-};
-
-string word = "CCD";
+int n = 2;
 
 class Solution {
 public:
-    bool exist(vector<vector<char>>& board, string word) {
-        this->row_len = board.size();
-        this->col_len = board[0].size();
-        this->length = word.size();
-        vector<vector<bool>> visit(this->row_len,vector<bool>(this->col_len,false));
-        for(int i = 0; i < row_len; i++){
-            for(int j = 0; j < col_len; j++){
-                if(board[i][j] == word[0]){
-                    if(recursion(board, word, i, j, 1, visit)) return true;
-                }
-            }
-        }
-        return false;
+    vector<string> generateParenthesis(int n) {
+        this->num_left = 0;
+        this->num_right = 0;
+        recursion(n);
+        return this->ans;
     }
 private:
-    int row_len,col_len,length;
-    int i_plus[4] = {1,0,-1,0};
-    int j_plus[4] = {0,1,0,-1};
-    bool recursion(vector<vector<char>>& board, string & word, int i, int j, int n, vector<vector<bool>> & visit){
-        if(n == this->length) return true;
-        visit[i][j] = true;
-        char c_str = word[n];
-        for(int k = 0; k < 4; k++){
-            int next_i = i + this->i_plus[k];
-            int next_j = j + this->j_plus[k];
-            if(next_i >= 0 && next_i < row_len && next_j >= 0 && next_j < col_len 
-                && board[next_i][next_j] == c_str 
-                && !visit[next_i][next_j]){
-                if(recursion(board, word, next_i, next_j, n+1, visit)) return true;
+    vector<string> ans;
+    string current_str;
+    int num_left, num_right;
+    void recursion(int n){
+        if(this->num_left == n && this->num_right == n){
+            this->ans.push_back(this->current_str);
+            return;
+        }
+        else{
+            if(this->num_left < n){
+                this->current_str.push_back('(');
+                this->num_left++;
+                recursion(n);
+                this->num_left--;
+                this->current_str.pop_back();
+            }
+            if(this->num_right < this->num_left){
+                this->current_str.push_back(')');
+                this->num_right++;
+                recursion(n);
+                this->num_right--;
+                this->current_str.pop_back();
             }
         }
-        visit[i][j] = false;
-        return false;
     }
 };
 
 int main(){
     Solution A;
-    cout << A.exist(board, word) << endl;
-    
+    vector<string> res = A.generateParenthesis(n);
+    cout << res.size() << endl;
+    for(auto val : res){
+       cout << val << endl;
+    }
 }

@@ -1,8 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <stack>
+#include <queue>
 
 using namespace std;
+
+vector<int> nums = {-10,-3,0,5,9};
 
 /**
  * Definition for a binary tree node.
@@ -27,25 +29,39 @@ struct TreeNode {
 
 class Solution {
 public:
-    int kthSmallest(TreeNode* root, int k) {
-        TreeNode *ptr = root;
-        stack<TreeNode*> nodes;
-        int res;
-        while(!nodes.empty() || ptr){
-            while(ptr){
-                nodes.push(ptr);
-                ptr = ptr->left;
-            }
-            ptr = nodes.top();
-            nodes.pop();
-            if(k == 1){
-                res = ptr->val;
-                break;
-            }
-            k--;
-            ptr = ptr->right;
+    bool isValidBST(TreeNode* root) {
+        int t_min,t_max;
+        return judgeBST(root, t_min, t_max);
+    }
+private:
+    bool judgeBST(TreeNode* root, int & t_min, int & t_max){
+        if(!root->left && !root->right){
+            t_min = root->val;
+            t_max = root->val;
+            return true;
         }
-        return res;
+        t_min = root->val;
+        t_max = root->val;
+        int left_min, left_max, right_min, right_max;
+        if(root->left){
+            if(!judgeBST(root->left, left_min, left_max)){
+                return false;
+            }
+            if(left_max >= root->val){
+                return false;
+            }
+            t_min = left_min;
+        }
+        if(root->right){
+            if(!judgeBST(root->right, right_min, right_max)){
+                return false;
+            }
+            if(right_min <= root->val){
+                return false;
+            }
+            t_max = right_max;
+        }
+        return true;
     }
 };
 
