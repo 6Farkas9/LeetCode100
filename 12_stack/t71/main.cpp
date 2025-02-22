@@ -1,36 +1,60 @@
 #include <iostream>
-#include <vector>
 #include <string>
 #include <stack>
 
 using namespace std;
 
-vector<int> temperatures = {73,74,75,71,69,72,76,73};
+string s = "abc3[a2[c]vas2[b]]xyz";
+// string s = "abc3[acd]]xyz";
+// string s = "abc3[2[c]]xyz";
+// string s = "123a";
 
 class Solution {
 public:
-    vector<int> dailyTemperatures(vector<int>& temperatures) {
-        stack<int> not_found;
-        int length = temperatures.size();
-        not_found.push(0);
-        vector<int> ans(length, 0);
-        for(int i = 1; i < length; i++){
-            cout << i << endl;
-            int current_t = temperatures[i];
-            while(!not_found.empty() && current_t > temperatures[not_found.top()]){
-                cout << "ans[" << not_found.top() << "]:" << i - not_found.top() << endl;
-                ans[not_found.top()] = i - not_found.top();
-                not_found.pop();
+    string decodeString(string s){
+        int length = s.size();
+        stack<string> str_store;
+        for(int i = 0; i < length; i++){
+            if(s.at(i) >= '0' && s.at(i) <= '9'){
+                string temp = "";
+                while(s.at(i) >= '0' && s.at(i) <= '9'){
+                    temp += s[i++];
+                }
+                str_store.push(temp);
+                i--;
             }
-            not_found.push(i);
+            else if((s.at(i) >= 'a' && s.at(i) <= 'z') || s.at(i) == '['){
+                string temp = "";
+                temp = temp + s.at(i);
+                str_store.push(temp);
+            }
+            else{
+                string temp = "";
+                temp = temp + str_store.top();
+                str_store.pop();
+                while(str_store.top() != "["){
+                    temp = str_store.top() + temp;
+                    str_store.pop();
+                }
+                str_store.pop();
+                int repeat_num = stoi(str_store.top());
+                str_store.pop();
+                string temp_res = "";
+                for(int j = 0; j < repeat_num; j++) temp_res += temp;
+                str_store.push(temp_res);
+            }
         }
-        return ans;
+        string res = "";
+        while(!str_store.empty()){
+            res = str_store.top() + res;
+            str_store.pop();
+        }
+        return res;
     }
 };
 
 int main(){
     Solution A;
-    auto res =  A.dailyTemperatures(temperatures);
-    for(auto val : res) cout << val << " ";
-    cout << endl;
+    auto res =  A.decodeString(s);
+    cout << res << endl;
 }

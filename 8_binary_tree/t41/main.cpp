@@ -4,8 +4,6 @@
 
 using namespace std;
 
-vector<int> nums = {-10,-3,0,5,9};
-
 /**
  * Definition for a binary tree node.
  * struct TreeNode {
@@ -29,29 +27,7 @@ struct TreeNode {
 
 class Solution {
 public:
-    TreeNode* sortedArrayToBST(vector<int>& nums) {
-        int length = nums.size();
-        TreeNode *res = NULL;
-        createBSF(nums, 0, length - 1, res);
-        return res;
-    }
-private:
-    void createBSF(vector<int> & nums, int left, int right, TreeNode* &root){
-        if(left > right){
-            return;
-        }
-        int mid = (left + right) / 2;
-        root = new TreeNode(nums[mid]);
-        createBSF(nums, left, mid - 1, root->left);
-        createBSF(nums, mid + 1, right, root->right);
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        
     }
 };
-
-int main(){
-    Solution A;
-    TreeNode *res = A.sortedArrayToBST(nums);
-    if(res)
-        cout << res->val << endl;
-    else
-        cout << "?" << endl;
-}

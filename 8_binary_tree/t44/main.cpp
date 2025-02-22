@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -27,27 +27,24 @@ struct TreeNode {
 
 class Solution {
 public:
-    vector<int> rightSideView(TreeNode* root) {
-        vector<int> res;
-        if(!root){
-            return res;
-        }
-        TreeNode *ptr = NULL;
-        queue<TreeNode*> lastnodes;
-        lastnodes.push(root);
-        do{
-            int length = lastnodes.size();
-            for(int i = 0; i < length; i++){
-                ptr = lastnodes.front();
-                lastnodes.pop();
-                if(ptr->left)
-                    lastnodes.push(ptr->left);
-                if(ptr->right)
-                    lastnodes.push(ptr->right);
-                if(i == length - 1)
-                    res.push_back(ptr->val);
+    int kthSmallest(TreeNode* root, int k) {
+        TreeNode *ptr = root;
+        stack<TreeNode*> nodes;
+        int res;
+        while(!nodes.empty() || ptr){
+            while(ptr){
+                nodes.push(ptr);
+                ptr = ptr->left;
             }
-        }while(!lastnodes.empty());
+            ptr = nodes.top();
+            nodes.pop();
+            if(k == 1){
+                res = ptr->val;
+                break;
+            }
+            k--;
+            ptr = ptr->right;
+        }
         return res;
     }
 };

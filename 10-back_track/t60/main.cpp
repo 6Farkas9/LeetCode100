@@ -5,48 +5,54 @@
 
 using namespace std;
 
-string s = "abbab";
+vector<vector<char>> board = {
+    {'A','B','C','E'},
+    {'S','F','C','S'},
+    {'A','D','E','E'}
+};
+
+string word = "CCD";
 
 class Solution {
 public:
-    vector<vector<string>> partition(string s) {
-        int length = s.size();
-        vector<vector<bool>> judge(length,vector<bool>(length,true));
-        for(int k = length - 1; k > 0; k--){
-            for(int i = 0,j = length - k; j < length; i++,j++){
-                judge[i][j] = (judge[i+1][j-1] && s.at(i) == s.at(j));
+    bool exist(vector<vector<char>>& board, string word) {
+        this->row_len = board.size();
+        this->col_len = board[0].size();
+        this->length = word.size();
+        vector<vector<bool>> visit(this->row_len,vector<bool>(this->col_len,false));
+        for(int i = 0; i < row_len; i++){
+            for(int j = 0; j < col_len; j++){
+                if(board[i][j] == word[0]){
+                    if(recursion(board, word, i, j, 1, visit)) return true;
+                }
             }
         }
-        recursion(s, judge, 0, length);
-        return this->ans;
+        return false;
     }
 private:
-    vector<vector<string>> ans;
-    vector<string> current;
-    void recursion(string & s, vector<vector<bool>> & judge, int i, int & length){
-        if(i >= length){
-            this->ans.push_back(this->current);
-            return;
-        }
-        int j = i;
-        for(; j < length; j++){
-            if(judge[i][j]){
-                this->current.push_back(s.substr(i,j-i+1));
-                recursion(s, judge, j+1, length);
-                this->current.pop_back();
+    int row_len,col_len,length;
+    int i_plus[4] = {1,0,-1,0};
+    int j_plus[4] = {0,1,0,-1};
+    bool recursion(vector<vector<char>>& board, string & word, int i, int j, int n, vector<vector<bool>> & visit){
+        if(n == this->length) return true;
+        visit[i][j] = true;
+        char c_str = word[n];
+        for(int k = 0; k < 4; k++){
+            int next_i = i + this->i_plus[k];
+            int next_j = j + this->j_plus[k];
+            if(next_i >= 0 && next_i < row_len && next_j >= 0 && next_j < col_len 
+                && board[next_i][next_j] == c_str 
+                && !visit[next_i][next_j]){
+                if(recursion(board, word, next_i, next_j, n+1, visit)) return true;
             }
         }
+        visit[i][j] = false;
+        return false;
     }
 };
 
 int main(){
     Solution A;
-    vector<vector<string>> res =  A.partition(s);
-    cout << res.size() << endl;
-    for(auto len : res){
-        for(auto str : len){
-            cout << str << " ";
-        }
-        cout << endl;
-    }
+    cout << A.exist(board, word) << endl;
+    
 }

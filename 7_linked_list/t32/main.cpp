@@ -35,34 +35,32 @@ public:
 class Solution {
 public:
     Node* copyRandomList(Node* head) {
-        if(!head)
-            return head;
-        unordered_map<Node*,Node*> relation;
-        Node *res = (Node*)malloc(sizeof(Node));
-        res->val = head->val;
-        res->next = NULL;
-        res->random = NULL;
-        Node *ptr_orign = head->next, *ptr_res = res;
-        relation[head] = res;
-        while(ptr_orign){
-            Node *temp = (Node*)malloc(sizeof(Node));
-            temp->val = ptr_orign->val;
-            temp->next = NULL;
-            temp->random = NULL;
-            ptr_res->next = temp;
-            ptr_res = ptr_res->next;
-            relation[ptr_orign] = ptr_res;
-            ptr_orign = ptr_orign->next;
+        if(!head)   return nullptr;
+        unordered_map<Node*, Node*> created;
+        Node *p = head;
+        Node *ans = new Node(0), *last = ans;
+        while(p){
+            if(created.find(p) != created.end()){
+                last->next = created[p];
+            }
+            else{
+                last->next = new Node(p->val);
+                created[p] = last->next;
+            }
+            if(!p->random){
+                last->next->random = nullptr;
+            }
+            else if(created.find(p->random) != created.end()){
+                last->next->random = created[p->random];
+            }
+            else{
+                last->next->random = new Node(p->random->val);
+                created[p->random] = last->next->random;
+            }
+            last = last->next;
+            p = p->next;
         }
-        ptr_orign = head;
-        ptr_res = res;
-        while(ptr_orign){
-            if(ptr_orign->random)
-                ptr_res->random = relation[ptr_orign->random];
-            ptr_res = ptr_res->next;
-            ptr_orign = ptr_orign->next;
-        }
-        return res;
+        return ans->next;
     }
 };
 

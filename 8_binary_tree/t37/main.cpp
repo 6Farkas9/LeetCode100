@@ -27,21 +27,7 @@ struct TreeNode {
 class Solution {
 public:
     int maxDepth(TreeNode* root) {
-        if(!root){
-            return 0;
-        }
-        if(!root->left && !root->right){
-            return 1;
-        }
-        else{
-            int right_h = 0,left_h = 0;
-            if(root->left){
-                left_h = maxDepth(root->left);
-            }
-            if(root->right){
-                right_h = maxDepth(root->right);
-            }
-            return 1 + max(left_h,right_h);
-        }
+        if(!root)   return 0;
+        return max(maxDepth(root->left), maxDepth(root->right)) + 1;
     }
 };

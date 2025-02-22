@@ -6,83 +6,66 @@ using namespace std;
 
 class LRUCache {
 public:
-    LRUCache(int capacity) {
-        this->capacity = capacity;
-        this->head = (Data_List*)malloc(sizeof(Data_List));
-        this->head->next = NULL;
-        this->head->last = NULL;
+    LRUCache(int capacity){
+        this->_capacity = capacity;
+        this->_head = new DataNode();
+        this->_head->last = this->_head->next = this->_head;
     }
     
     int get(int key) {
-        if(this->data.find(key) != this->data.end()){
-            Data_List *temp = this->data[key];
-            moveToHead(temp);
-            return temp->value;
-        } 
+        if(this->_key_to_data.find(key) != this->_key_to_data.end()){
+            DataNode *node = this->_key_to_data[key];
+            moveToHead(node);
+            return node->value;
+        }
         else{
             return -1;
         }
     }
     
     void put(int key, int value) {
-        Data_List *temp;
-        if(this->data.find(key) != this->data.end()){
-            temp = this->data[key];
-            temp->value = value;
-            moveToHead(temp);
-        }
-        else if(this->capacity){
-            temp = (Data_List*)malloc(sizeof(Data_List));
-            temp->value = value;
-            temp->key = key;
-            this->data[key] = temp;
-            if(head->next == NULL){
-                head->next = temp;
-                temp->next = head;
-                head->last = temp;
-                temp->last = head;
-            }
-            else{
-                temp->next = head->next;
-                temp->last = head;
-                head->next->last = temp;
-                head->next = temp;
-            }
-            this->capacity--;
+        if(this->_key_to_data.find(key) != this->_key_to_data.end()){
+            DataNode *node = this->_key_to_data[key];
+            node->value = value;
+            moveToHead(node);
         }
         else{
-            Data_List *todelete = head->last;
-            data.erase(todelete->key);
-            data[key] = todelete;
-            todelete->value = value;
-            todelete->key = key;
-            moveToHead(todelete);
+            if(this->_capacity){
+                DataNode *node = new DataNode(key, value, this->_head, this->_head->next);
+                this->_head->next->last = node;
+                this->_head->next = node;
+                this->_key_to_data[key] = node;
+                --this->_capacity;
+            }
+            else{
+                DataNode *dnode = this->_head->last;
+                this->_key_to_data.erase(dnode->key);
+                dnode->key = key;
+                dnode->value = value;
+                this->_key_to_data[key] = dnode;
+                moveToHead(dnode);
+            }
         }
     }
 private:
-    int capacity;
-    struct Data_List {
-        int value;
-        int key;
-        struct Data_List *last;
-        struct Data_List *next;
-        Data_List() : value(0), key(0), next(nullptr), last(nullptr) {}
+    int _capacity;
+    struct DataNode {
+        int key, value;
+        struct DataNode *last, *next;
+        DataNode() : key(0), value(0), last(nullptr), next(nullptr) {}
+        DataNode(int key, int value) : key(key), value(value), last(nullptr), next(nullptr) {}
+        DataNode(int key, int value, DataNode* last, DataNode* next) : key(key), value(value), last(last), next(next) {}
     };
-    unordered_map<int, Data_List*> data;
-    Data_List *head;
+    unordered_map<int, DataNode*> _key_to_data;
+    DataNode *_head;
 
-    void moveToHead(Data_List *ptr){
-        if(ptr->last == this->head){
-            return;
-        }
-        else{
-            ptr->last->next = ptr->next;
-            ptr->next->last = ptr->last;
-            ptr->next = this->head->next;
-            ptr->last = this->head;
-            this->head->next->last = ptr;
-            this->head->next = ptr;
-        }
+    void moveToHead(DataNode* &node){
+        node->last->next = node->next;
+        node->next->last = node->last;
+        node->last = this->_head;
+        node->next = this->_head->next;
+        this->_head->next->last = node;
+        this->_head->next = node;
     }
 };
 
@@ -95,6 +78,8 @@ int main(){
     A.put(1,5);
 
     A.put(1,2);
+
+    A.put(3,10);
 
     cout << A.get(1) << endl;
     cout << A.get(2) << endl;

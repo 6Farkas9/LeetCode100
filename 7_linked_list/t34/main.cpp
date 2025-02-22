@@ -28,52 +28,43 @@ struct ListNode {
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        int num = lists.size();
-        if(!num){
-            return NULL;
-        }
-        int gap = 1;
-        int left = 0, right;
-        while(true){
-            right = left + gap;
-            if(right >= num){
-                if(left == 0){
-                    break;
-                }
+        int length = lists.size();
+        if(!length) return nullptr;
+        int cl, ll = length;
+        cl = ll % 2 == 1 ? ll / 2 + 1 : ll / 2;
+        ListNode *dummy = new ListNode(), *p, *q, *r;
+        while(ll > 1){
+            for(int i = 0; i < cl; ++i){
+                if(i*2 + 1 >= ll)  lists[i] = lists[i*2];
                 else{
-                    left = 0;
-                    gap = gap * 2;
-                    continue;
+                    dummy->next = nullptr;
+                    p = lists[i*2], q = lists[i*2+1], r = dummy;
+                    while(p && q){
+                        if(p->val <= q->val){
+                            r->next = p;
+                            p = p->next;
+                        }
+                        else{
+                            r->next = q;
+                            q = q->next;
+                        }
+                        r = r->next;
+                    }
+                    while(p){
+                        r->next = p;
+                        p = p->next;
+                        r = r->next;
+                    }
+                    while(q){
+                        r->next = q;
+                        q = q->next;
+                        r = r->next;
+                    }
+                    lists[i] = dummy->next;
                 }
             }
-            ListNode dummy;
-            ListNode *ptr = &dummy, *left_ptr = lists[left], *right_ptr = lists[right];
-            while(left_ptr && right_ptr){
-                if(left_ptr->val <= right_ptr->val){
-                    ptr->next = left_ptr;
-                    left_ptr = left_ptr->next;
-                }
-                else{
-                    ptr->next = right_ptr;
-                    right_ptr = right_ptr->next;
-                }
-                ptr = ptr->next;
-            }
-            if(right_ptr){
-                left_ptr = right_ptr;
-            }
-            while(left_ptr){
-                ptr->next = left_ptr;
-                left_ptr = left_ptr->next;
-                ptr = ptr->next;
-            }
-            ptr->next = NULL;
-            lists[left] = dummy.next;
-            left = left + gap * 2;
-            if(left >= num){
-                gap = gap * 2;
-                left = 0;
-            }
+            ll = cl;
+            cl = ll % 2 == 1 ? ll / 2 + 1 : ll / 2;
         }
         return lists[0];
     }

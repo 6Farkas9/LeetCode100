@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
-#include <deque>
+#include <unordered_map>
+#include <stack>
 
 using namespace std;
 
@@ -10,7 +11,9 @@ using namespace std;
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 
@@ -18,27 +21,34 @@ struct TreeNode {
     int val;
     TreeNode *left;
     TreeNode *right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
 class Solution {
 public:
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        if(!root || root == p || root == q){
-            return root;
+    int pathSum(TreeNode* root, int targetSum) {
+        this->pre_sum[0] = 1;
+        return dfsSum(root,0,targetSum);
+    }
+private:
+    unordered_map<long long, int> pre_sum;
+    int dfsSum(TreeNode *root, long long last_sum, int targetSum){
+        if(!root){
+            return 0;
         }
-        TreeNode *left_res = lowestCommonAncestor(root->left, p, q);
-        TreeNode *right_res = lowestCommonAncestor(root->right, p, q);
-        if(left_res && right_res){
-            return root;
+        int res = 0;
+        long long current_sum = last_sum + root->val;
+        long long current_target = current_sum - targetSum;
+        if(this->pre_sum.find(current_target) != this->pre_sum.end()){
+            res += this->pre_sum[current_target];
         }
-        if(left_res){
-            return left_res;
-        }
-        if(right_res){
-            return right_res;
-        }
-        return NULL;
+        pre_sum[current_sum]++;
+        res += dfsSum(root->left, current_sum, targetSum);
+        res += dfsSum(root->right, current_sum, targetSum);
+        pre_sum[current_sum]--;
+        return res;
     }
 };
 

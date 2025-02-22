@@ -29,47 +29,29 @@ struct TreeNode {
 
 class Solution {
 public:
-    bool isValidBST(TreeNode* root) {
-        int t_min,t_max;
-        return judgeBST(root, t_min, t_max);
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        int length = nums.size();
+        TreeNode *res = NULL;
+        createBSF(nums, 0, length - 1, res);
+        return res;
     }
 private:
-    bool judgeBST(TreeNode* root, int & t_min, int & t_max){
-        if(!root->left && !root->right){
-            t_min = root->val;
-            t_max = root->val;
-            return true;
+    void createBSF(vector<int> & nums, int left, int right, TreeNode* &root){
+        if(left > right){
+            return;
         }
-        t_min = root->val;
-        t_max = root->val;
-        int left_min, left_max, right_min, right_max;
-        if(root->left){
-            if(!judgeBST(root->left, left_min, left_max)){
-                return false;
-            }
-            if(left_max >= root->val){
-                return false;
-            }
-            t_min = left_min;
-        }
-        if(root->right){
-            if(!judgeBST(root->right, right_min, right_max)){
-                return false;
-            }
-            if(right_min <= root->val){
-                return false;
-            }
-            t_max = right_max;
-        }
-        return true;
+        int mid = (left + right) / 2;
+        root = new TreeNode(nums[mid]);
+        createBSF(nums, left, mid - 1, root->left);
+        createBSF(nums, mid + 1, right, root->right);
     }
 };
 
 int main(){
-    // Solution A;
-    // TreeNode *res = A.sortedArrayToBST(nums);
-    // if(res)
-    //     cout << res->val << endl;
-    // else
-    //     cout << "?" << endl;
+    Solution A;
+    TreeNode *res = A.sortedArrayToBST(nums);
+    if(res)
+        cout << res->val << endl;
+    else
+        cout << "?" << endl;
 }

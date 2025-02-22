@@ -27,20 +27,28 @@ struct TreeNode {
 
 class Solution {
 public:
-    void flatten(TreeNode* root) {
-        TreeNode *ptr = root;
-        while(ptr){
-            if(ptr->left){
-                TreeNode *temp = ptr->left;
-                while(temp->right){
-                    temp = temp->right;
-                }
-                temp->right = ptr->right;
-                ptr->right = ptr->left;
-                ptr->left = NULL;
-            }
-            ptr = ptr->right;
+    vector<int> rightSideView(TreeNode* root) {
+        vector<int> res;
+        if(!root){
+            return res;
         }
+        TreeNode *ptr = NULL;
+        queue<TreeNode*> lastnodes;
+        lastnodes.push(root);
+        do{
+            int length = lastnodes.size();
+            for(int i = 0; i < length; i++){
+                ptr = lastnodes.front();
+                lastnodes.pop();
+                if(ptr->left)
+                    lastnodes.push(ptr->left);
+                if(ptr->right)
+                    lastnodes.push(ptr->right);
+                if(i == length - 1)
+                    res.push_back(ptr->val);
+            }
+        }while(!lastnodes.empty());
+        return res;
     }
 };
 
