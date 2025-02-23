@@ -29,26 +29,25 @@ struct TreeNode {
 class Solution {
 public:
     int pathSum(TreeNode* root, int targetSum) {
-        this->pre_sum[0] = 1;
-        return dfsSum(root,0,targetSum);
+        this->target = targetSum;
+        this->presum[0] = 1;
+        return dfs(root, 0);
     }
 private:
-    unordered_map<long long, int> pre_sum;
-    int dfsSum(TreeNode *root, long long last_sum, int targetSum){
-        if(!root){
-            return 0;
+    unordered_map<long long,int> presum;
+    long long target;
+    int dfs(TreeNode* &root, long long lastsum){
+        if(!root)   return 0;
+        int ans = 0;
+        if(this->presum.find(lastsum - this->target + root->val) != this->presum.end()){
+            ans += this->presum[lastsum - this->target + root->val];
         }
-        int res = 0;
-        long long current_sum = last_sum + root->val;
-        long long current_target = current_sum - targetSum;
-        if(this->pre_sum.find(current_target) != this->pre_sum.end()){
-            res += this->pre_sum[current_target];
-        }
-        pre_sum[current_sum]++;
-        res += dfsSum(root->left, current_sum, targetSum);
-        res += dfsSum(root->right, current_sum, targetSum);
-        pre_sum[current_sum]--;
-        return res;
+        lastsum += root->val;
+        ++presum[lastsum];
+        ans += dfs(root->left, lastsum);
+        ans += dfs(root->right, lastsum);
+        --presum[lastsum];
+        return ans;
     }
 };
 

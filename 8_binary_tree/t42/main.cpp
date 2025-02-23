@@ -30,20 +30,22 @@ struct TreeNode {
 class Solution {
 public:
     TreeNode* sortedArrayToBST(vector<int>& nums) {
-        int length = nums.size();
-        TreeNode *res = NULL;
-        createBSF(nums, 0, length - 1, res);
-        return res;
+        TreeNode* dummy = new TreeNode();
+        int length = nums.size() - 1;
+        createBST(nums, 0, length, dummy->right);
+        return dummy->right;
     }
 private:
-    void createBSF(vector<int> & nums, int left, int right, TreeNode* &root){
-        if(left > right){
+    void createBST(vector<int>& nums, int start, int end, TreeNode* &root){
+        if(start > end) return;
+        if(start == end){
+            root = new TreeNode(nums[start]);
             return;
         }
-        int mid = (left + right) / 2;
+        int mid = (start + end) / 2;
         root = new TreeNode(nums[mid]);
-        createBSF(nums, left, mid - 1, root->left);
-        createBSF(nums, mid + 1, right, root->right);
+        createBST(nums, start, mid - 1, root->left);
+        createBST(nums, mid + 1, end, root->right);
     }
 };
 

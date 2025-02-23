@@ -28,26 +28,18 @@ struct TreeNode {
 class Solution {
 public:
     int maxPathSum(TreeNode* root) {
-        dfs(root);
-        return this->max_sum;
+        int ans = INT_MIN;
+        dfs(root, ans);
+        return ans;
     }
 private:
-    int max_sum = INT_MIN;
-    int dfs(TreeNode* root){
-        if(!root->left && !root->right){
-            if(root->val > this->max_sum) this->max_sum = root->val;
-            return root->val;
-        }
-        int left_res = -1, right_res = -1;
-        if(root->left)  left_res = dfs(root->left);
-        if(root->right) right_res = dfs(root->right);
-        int res = root->val;
-        if(left_res > 0)    res += left_res;
-        if(right_res > 0)   res += right_res;
-        if(res > this->max_sum) this->max_sum = res;
-        int plus_sum = max(left_res, right_res);
-        if(plus_sum > 0) return root->val + plus_sum;
-        else return root->val;
+    int dfs(TreeNode* root, int &ans){
+        if(!root)   return 0;
+        int l_ans = dfs(root->left, ans);
+        int r_ans = dfs(root->right, ans);
+        int c_ans = root->val + l_ans + r_ans;
+        ans = max(ans, c_ans);
+        return max(0, root->val + max(l_ans, r_ans));
     }
 };
 

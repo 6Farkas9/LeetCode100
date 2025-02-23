@@ -28,18 +28,17 @@ struct TreeNode {
 class Solution {
 public:
     void flatten(TreeNode* root) {
-        TreeNode *ptr = root;
-        while(ptr){
-            if(ptr->left){
-                TreeNode *temp = ptr->left;
-                while(temp->right){
-                    temp = temp->right;
-                }
-                temp->right = ptr->right;
-                ptr->right = ptr->left;
-                ptr->left = NULL;
+        if(!root || (!root->left && !root->right))  return;
+        TreeNode* p = root;
+        while(p){
+            if(p->left){
+                TreeNode* q = p->left;
+                while(q->right) q = q->right;
+                q->right = p->right;
+                p->right = p->left;
+                p->left = nullptr;
             }
-            ptr = ptr->right;
+            p = p->right;
         }
     }
 };

@@ -28,27 +28,30 @@ struct TreeNode {
 class Solution {
 public:
     vector<int> rightSideView(TreeNode* root) {
-        vector<int> res;
-        if(!root){
-            return res;
-        }
-        TreeNode *ptr = NULL;
-        queue<TreeNode*> lastnodes;
-        lastnodes.push(root);
-        do{
-            int length = lastnodes.size();
-            for(int i = 0; i < length; i++){
-                ptr = lastnodes.front();
-                lastnodes.pop();
-                if(ptr->left)
-                    lastnodes.push(ptr->left);
-                if(ptr->right)
-                    lastnodes.push(ptr->right);
-                if(i == length - 1)
-                    res.push_back(ptr->val);
+        vector<int> ans;
+        if(!root)   return ans;
+        queue<TreeNode*> nodes;
+        TreeNode* p;
+        int num = 1, cnum = 0;
+        nodes.push(root);
+        while(!nodes.empty()){
+            for(int i = 0; i < num; ++i){
+                p = nodes.front();
+                if(p->left){
+                    nodes.push(p->left);
+                    ++cnum;
+                }
+                if(p->right){
+                    nodes.push(p->right);
+                    ++cnum;
+                }
+                nodes.pop();
             }
-        }while(!lastnodes.empty());
-        return res;
+            ans.push_back(p->val);
+            num = cnum;
+            cnum = 0;
+        }
+        return ans;
     }
 };
 

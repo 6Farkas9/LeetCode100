@@ -28,24 +28,20 @@ struct TreeNode {
 class Solution {
 public:
     int kthSmallest(TreeNode* root, int k) {
-        TreeNode *ptr = root;
         stack<TreeNode*> nodes;
-        int res;
-        while(!nodes.empty() || ptr){
-            while(ptr){
-                nodes.push(ptr);
-                ptr = ptr->left;
+        TreeNode* p = root;
+        while(p || !nodes.empty()){
+            while(p){
+                nodes.push(p);
+                p = p->left;
             }
-            ptr = nodes.top();
+            p = nodes.top();
             nodes.pop();
-            if(k == 1){
-                res = ptr->val;
-                break;
-            }
-            k--;
-            ptr = ptr->right;
+            if(k == 1)  break;
+            --k;
+            p = p->right;  
         }
-        return res;
+        return p->val;
     }
 };
 

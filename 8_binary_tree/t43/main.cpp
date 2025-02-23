@@ -30,37 +30,27 @@ struct TreeNode {
 class Solution {
 public:
     bool isValidBST(TreeNode* root) {
-        int t_min,t_max;
-        return judgeBST(root, t_min, t_max);
+        int temp;
+        return judgeBST(root, temp, temp);
     }
 private:
-    bool judgeBST(TreeNode* root, int & t_min, int & t_max){
+    bool judgeBST(TreeNode* &root, int &_max, int &_min){
         if(!root->left && !root->right){
-            t_min = root->val;
-            t_max = root->val;
+            _max = _min = root->val;
             return true;
         }
-        t_min = root->val;
-        t_max = root->val;
-        int left_min, left_max, right_min, right_max;
+        int l_max = root->val, l_min = root->val;
+        int r_max = root->val, r_min = root->val;
         if(root->left){
-            if(!judgeBST(root->left, left_min, left_max)){
-                return false;
-            }
-            if(left_max >= root->val){
-                return false;
-            }
-            t_min = left_min;
+            if(!judgeBST(root->left, l_max, l_min)) return false;
+            if(root->val <= l_max)  return false;
         }
         if(root->right){
-            if(!judgeBST(root->right, right_min, right_max)){
-                return false;
-            }
-            if(right_min <= root->val){
-                return false;
-            }
-            t_max = right_max;
+            if(!judgeBST(root->right, r_max, r_min)) return false;
+            if(root->val >= r_min)  return false;
         }
+        _max = r_max;
+        _min = l_min;
         return true;
     }
 };

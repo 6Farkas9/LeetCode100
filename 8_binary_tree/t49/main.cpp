@@ -24,21 +24,13 @@ struct TreeNode {
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        if(!root || root == p || root == q){
-            return root;
-        }
-        TreeNode *left_res = lowestCommonAncestor(root->left, p, q);
-        TreeNode *right_res = lowestCommonAncestor(root->right, p, q);
-        if(left_res && right_res){
-            return root;
-        }
-        if(left_res){
-            return left_res;
-        }
-        if(right_res){
-            return right_res;
-        }
-        return NULL;
+        if(!root || root == p || root == q)   return root;
+        TreeNode *l_ans = lowestCommonAncestor(root->left, p, q);
+        TreeNode *r_ans = lowestCommonAncestor(root->right, p, q);
+        if(l_ans && r_ans)  return root;
+        if(l_ans)   return l_ans;
+        if(r_ans)   return r_ans;
+        return nullptr;
     }
 };
 

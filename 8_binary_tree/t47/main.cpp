@@ -29,29 +29,28 @@ struct TreeNode {
 class Solution {
 public:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        int length = preorder.size();
-        for(int i = 0; i < length; i++)
-            this->in_pos[inorder[i]] = i;
-        return build(preorder, inorder, 0, length - 1, 0, length - 1);
+        int length = inorder.size() - 1;
+        for(int i = 0; i <= length; ++i){
+            val_to_pos[inorder[i]] = i;
+        }
+        TreeNode *dummy = new TreeNode();
+        build(preorder, inorder, dummy->right, 0, length, 0, length);
+        return dummy->right;
     }
 private:
-    unordered_map<int,int> in_pos;
-
-    TreeNode* build(vector<int>& preorder, vector<int>& inorder, int pre_start, int pre_end, int in_start, int in_end){
-        if(pre_start == pre_end){
-            return new TreeNode(preorder[pre_start]);
+    unordered_map<int, int> val_to_pos;
+    void build(vector<int>& preorder, vector<int>& inorder, TreeNode* &root, int ps, int pe, int is, int ie){
+        cout << ps << "," << pe << "," << is << "," << ie << endl;
+        if(ps > pe) return;
+        if(ps == pe){
+            root = new TreeNode(preorder[ps]);
+            return;
         }
-        int root_val = preorder[pre_start];
-        TreeNode *root = new TreeNode(root_val);
-        int in_root_pos = this->in_pos[root_val];
-        int length = in_root_pos - in_start;
-        if(in_root_pos != in_start){
-            root->left = build(preorder, inorder, pre_start + 1, pre_start + length, in_start, in_root_pos - 1);
-        }
-        if(in_root_pos != in_end){
-            root->right = build(preorder, inorder, pre_start + length + 1, pre_end, in_root_pos + 1, in_end);
-        }
-        return root;
+        int root_val = preorder[ps];
+        int root_pos = val_to_pos[root_val];
+        root = new TreeNode(root_val);
+        build(preorder, inorder, root->left, ps + 1, ps + root_pos - is, is, root_pos - 1);
+        build(preorder, inorder, root->right, ps + root_pos - is + 1, pe, root_pos + 1, ie);
     }
 };
 
