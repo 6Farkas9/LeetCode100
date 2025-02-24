@@ -17,53 +17,53 @@ using namespace std;
 class Trie {
 public:
     Trie() {
-        this->head = new TreeNode;
-        this->head->is_tail = false;
+        this->head = new TrieNode();
     }
     
     void insert(string word) {
-        int length = word.size();
-        int i = 0;
-        TreeNode *ptr = this->head;
-        while(ptr->next.find(word[i]) != ptr->next.end() && i < length){
-            ptr = ptr->next[word[i++]];
+        TrieNode *p = this->head;
+        int length = word.size(), i;
+        for(i = 0; i < length; ++i){
+            char ch = word[i];
+            if(p->data.find(ch) == p->data.end())  break;
+            p = p->data[ch];
         }
-        while(i < length){
-            TreeNode *temp = new TreeNode;
-            temp->is_tail = false;
-            ptr->next[word[i]] = temp;
-            ptr = ptr->next[word[i++]];
+        for(; i < length; ++i){
+            char ch = word[i];
+            p->data[ch] = new TrieNode();
+            p = p->data[ch];
         }
-        ptr->is_tail = true;
+        p->isend = true;
     }
     
     bool search(string word) {
+        TrieNode *p = this->head;
         int length = word.size();
-        int i = 0;
-        TreeNode *ptr = this->head;
-        while(ptr->next.find(word[i]) != ptr->next.end() && i < length){
-            ptr = ptr->next[word[i++]];
+        for(int i = 0; i < length; ++i){
+            char ch = word[i];
+            if(p->data.find(ch) == p->data.end())  return false;
+            p = p->data[ch];
         }
-        if(i == length && ptr->is_tail) return true;
-        else return false;
+        return p->isend;
     }
     
     bool startsWith(string prefix) {
+        TrieNode *p = this->head;
         int length = prefix.size();
-        int i = 0;
-        TreeNode *ptr = this->head;
-        while(ptr->next.find(prefix[i]) != ptr->next.end() && i < length){
-            ptr = ptr->next[prefix[i++]];
+        for(int i = 0; i < length; ++i){
+            char ch = prefix[i];
+            if(p->data.find(ch) == p->data.end())  return false;
+            p = p->data[ch];
         }
-        if(i == length) return true;
-        else return false;
+        return true;
     }
 private:
-    typedef struct TreeNode{
-        unordered_map<char,TreeNode*> next;
-        bool is_tail;
-    }TreeNode;
-    TreeNode* head;
+    struct TrieNode{
+        unordered_map<char,TrieNode*> data;
+        bool isend;
+        TrieNode(): isend(false){};
+    };
+    TrieNode *head;
 };
 
 int main(){

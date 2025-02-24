@@ -7,8 +7,8 @@ using namespace std;
 
 vector<vector<int>> grid = {
     {2,1,1},
-    {1,1,0},
-    {0,1,1}
+    {0,0,1},
+    {1,1,1}
 };
 
 // vector<vector<int>> grid = {
@@ -20,47 +20,42 @@ public:
     int orangesRotting(vector<vector<int>>& grid) {
         int m = grid.size();
         int n = grid[0].size();
-        queue<pair<int,int>> rotted_pos;
-        int orange_num = 0;
-        for(int i = 0; i < m; i++){
-            for(int j = 0; j < n; j++){
-                if(grid[i][j] == 2){
-                    rotted_pos.push(make_pair(i,j));
-                    grid[i][j] = 0;
-                }
-                else if(grid[i][j] == 0) grid[i][j] = -1;
-                else{
-                    grid[i][j] = -2;
-                    orange_num++;
-                }
+        int flash_num = 0;
+        queue<pair<int,int>>    nodes;
+        int direction[2][4] = {
+            {-1, 0, 1, 0},
+            {0, 1, 0, -1}
+        };
+        int ans = 0;
+        for(int i = 0; i < m; ++i){
+            for(int j = 0; j < n; ++j){
+                if(grid[i][j] == 1) ++flash_num;
+                else if(grid[i][j] == 2)    nodes.push(make_pair(i,j));
             }
         }
-        if(orange_num == 0) return 0;
-        int res = 0;
-        while(!rotted_pos.empty()){
-            int length = rotted_pos.size();
-            for(int i = 0; i < length; i++){
-                pair<int,int> pos = rotted_pos.front();
-                rotted_pos.pop();
-                for(int j = 0; j < 4; j++){
-                    int next_i = pos.first + this->i_plus[j];
-                    int next_j = pos.second + this->j_plus[j];
-                    if(next_i < m && next_i >=0 && next_j < n && next_j >= 0 && grid[next_i][next_j] == -2){
-                        int temp = grid[pos.first][pos.second] + 1;
-                        grid[next_i][next_j] = temp;
-                        if(temp > res) res = temp;
-                        rotted_pos.push(make_pair(next_i,next_j));
-                        orange_num--;
+        while(!nodes.empty()){
+            int length = nodes.size();
+            bool found = false;
+            for(int i = 0; i < length; ++i){
+                auto node = nodes.front();
+                nodes.pop();
+                int ci = node.first, cj = node.second;
+                for(int j = 0; j < 4; ++j){
+                    int ni = ci + direction[0][j], nj = cj + direction[1][j];
+                    if(ni < 0 || ni >= m || nj < 0 || nj >= n)  continue;
+                    if(grid[ni][nj] == 1){
+                        found = true;
+                        grid[ni][nj] = 2;
+                        --flash_num;
+                        nodes.push(make_pair(ni, nj));
                     }
                 }
             }
+            if(found)   ++ans;
         }
-        if(orange_num > 0) return -1;
-        else return res;
+        ans = flash_num ? -1 : ans;
+        return ans;
     }
-private:
-    int i_plus[4] = {-1,0,1,0};
-    int j_plus[4] = {0,-1,0,1};
 };
 
 int main(){
