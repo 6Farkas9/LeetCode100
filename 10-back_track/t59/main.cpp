@@ -5,40 +5,33 @@
 
 using namespace std;
 
-int n = 2;
+int n = 3;
 
 class Solution {
 public:
     vector<string> generateParenthesis(int n) {
-        this->num_left = 0;
-        this->num_right = 0;
-        recursion(n);
-        return this->ans;
+        int left = n, right = n;
+        vector<string> ans;
+        string ca = "";
+        recursion(n, 0, 0, ans, ca);
+        return ans;
     }
 private:
-    vector<string> ans;
-    string current_str;
-    int num_left, num_right;
-    void recursion(int n){
-        if(this->num_left == n && this->num_right == n){
-            this->ans.push_back(this->current_str);
+    void recursion(int &n, int left, int right, vector<string> &ans, string &ca){
+        cout << ca << endl;
+        if(left == n){
+            for(int i = right; i < n; ++i)  ca.push_back(')');
+            ans.push_back(ca);
+            for(int i = right; i < n; ++i)  ca.pop_back();
             return;
         }
-        else{
-            if(this->num_left < n){
-                this->current_str.push_back('(');
-                this->num_left++;
-                recursion(n);
-                this->num_left--;
-                this->current_str.pop_back();
-            }
-            if(this->num_right < this->num_left){
-                this->current_str.push_back(')');
-                this->num_right++;
-                recursion(n);
-                this->num_right--;
-                this->current_str.pop_back();
-            }
+        ca.push_back('(');
+        recursion(n, left + 1, right, ans, ca);
+        ca.pop_back();
+        if(left > right){
+            ca.push_back(')');
+            recursion(n, left, right + 1, ans, ca);
+            ca.pop_back();
         }
     }
 };

@@ -5,40 +5,40 @@
 
 using namespace std;
 
-string digits = "";
+string digits = "23";
 
 class Solution {
 public:
     vector<string> letterCombinations(string digits) {
         int length = digits.size();
-        if(!length)
-            return this->ans;
+        if(!length) return ans;
         recursion(digits, 0, length);
         return this->ans;
     }
 private:
     vector<string> ans;
-    string current;
+    vector<char> current_ans;
     unordered_map<char,vector<char>> table = {
         {'2' , {'a','b','c'}},
         {'3' , {'d','e','f'}},
         {'4' , {'g','h','i'}},
         {'5' , {'j','k','l'}},
         {'6' , {'m','n','o'}},
-        {'7' , {'p','q','e','s'}},
+        {'7' , {'p','q','r','s'}},
         {'8' , {'t','u','v'}},
         {'9' , {'w','x','y','z'}}
     };
-    void recursion(string & digits, int i, int & length){
-        if(i == length){
-            this->ans.push_back(this->current);
-            return;
+    void recursion(string &digits, int start, int &end){
+        if(start == end){
+            string temp = "";
+            for(char ch : this->current_ans)    temp += ch;
+            this->ans.push_back(temp);
         }
-        char current_int = digits[i];
-        for(char ch : table[current_int]){
-            this->current.push_back(ch);
-            recursion(digits, i+1, length);
-            this->current.pop_back();
+        int length = this->table[digits[start]].size();
+        for(int i = 0; i < length; ++i){
+            this->current_ans.push_back(table[digits[start]][i]);
+            recursion(digits, start + 1, end);
+            this->current_ans.pop_back();
         }
     }
 };

@@ -11,22 +11,22 @@ vector<int> nums = {1,2,3};
 class Solution {
 public:
     vector<vector<int>> subsets(vector<int>& nums) {
-        int length = nums.size();
-        subsetsRecursion(nums, 0, length);
-        return this->ans;
+        int length = nums.size() - 1;
+        vector<vector<int>> ans;
+        vector<int> current_ans;
+        recursion(nums, 0, length, ans, current_ans);
+        return ans;
     }
 private:
-    vector<vector<int>> ans;
-    vector<int> current;
-    void subsetsRecursion(vector<int>& nums, int i, int & length){
-        if(i == length){
-            ans.push_back(current);
+    void recursion(vector<int>& nums, int start, int end, vector<vector<int>> &ans, vector<int> &current_ans){
+        if(start > end){
+            ans.push_back(current_ans);
             return;
         }
-        current.push_back(nums[i]);
-        subsetsRecursion(nums, i+1, length);
-        current.pop_back();
-        subsetsRecursion(nums, i+1, length);
+        recursion(nums, start + 1, end, ans, current_ans);
+        current_ans.push_back(nums[start]);
+        recursion(nums, start + 1, end, ans, current_ans);
+        current_ans.pop_back();
     }
 };
 
@@ -35,9 +35,10 @@ int main(){
     vector<vector<int>> res = A.subsets(nums);
     cout << res.size() << endl;
     for(auto len : res){
+        cout << "[";
         for(auto val : len){
             cout << val << " ";
         }
-        cout << endl;
+        cout << "]" << endl;
     }
 }
