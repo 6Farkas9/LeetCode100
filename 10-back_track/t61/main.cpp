@@ -10,30 +10,31 @@ string s = "abbab";
 class Solution {
 public:
     vector<vector<string>> partition(string s) {
-        int length = s.size();
-        vector<vector<bool>> judge(length,vector<bool>(length,true));
-        for(int k = length - 1; k > 0; k--){
-            for(int i = 0,j = length - k; j < length; i++,j++){
-                judge[i][j] = (judge[i+1][j-1] && s.at(i) == s.at(j));
+        this->length = s.size();
+        vector<vector<bool>> isreply(this->length, vector<bool>(this->length, true));
+        for(int differ = 1; differ < this->length; ++differ){
+            for(int j = differ; j < this->length; ++j){
+                int i = j - differ;
+                isreply[i][j] = isreply[i + 1][j - 1] && s[i] == s[j];
             }
         }
-        recursion(s, judge, 0, length);
+        recursion(s, isreply, 0);
         return this->ans;
     }
 private:
     vector<vector<string>> ans;
-    vector<string> current;
-    void recursion(string & s, vector<vector<bool>> & judge, int i, int & length){
-        if(i >= length){
-            this->ans.push_back(this->current);
+    vector<string> c_ans;
+    int length;
+    void recursion(string &s, vector<vector<bool>> &isreply, int i){
+        if(i >= this->length){
+            this->ans.push_back(this->c_ans);
             return;
         }
-        int j = i;
-        for(; j < length; j++){
-            if(judge[i][j]){
-                this->current.push_back(s.substr(i,j-i+1));
-                recursion(s, judge, j+1, length);
-                this->current.pop_back();
+        for(int j = i; j < this->length; ++j){
+            if(isreply[i][j]){
+                this->c_ans.push_back(s.substr(i, j - i + 1));
+                recursion(s, isreply, j + 1);
+                this->c_ans.pop_back();
             }
         }
     }

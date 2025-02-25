@@ -5,44 +5,57 @@
 
 using namespace std;
 
-int n = 9;
+int n = 4;
 
 class Solution {
 public:
     vector<vector<string>> solveNQueens(int n) {
-        this->current_queen.assign(n, -1);
-        this->n_origin = n;
-        recursion(0,0,0,0);
+        this->n = n;
+        deque<bool> fromleft(n, true);
+        deque<bool> fromright(n, true);
+        vector<bool> fromup(n, true);
+        this->null_line = "";
+        for(int i = 0; i < n; ++i)  this->null_line += '.';
+        recrusion(0, fromleft, fromright, fromup);
         return this->ans;
     }
 private:
-    int n_origin;
     vector<vector<string>> ans;
-    vector<int> current_queen;
-    void recursion(int row, int colmuns, int diagonals1, int diagonals2){
-        if(row == this->n_origin){
-            generateAns();
+    vector<string> c_ans;
+    string null_line;
+    int n;
+    // 从0开始
+    void recrusion(int c_line, deque<bool> &fromleft, deque<bool> &fromright, vector<bool> &fromup){
+        if(c_line >= n){
+            this->ans.push_back(this->c_ans);
             return;
         }
-        int available_pos = ((1 << this->n_origin) - 1) & (~(colmuns | diagonals1 | diagonals2));
-        while(available_pos != 0){
-            int pos_bit = available_pos & (-available_pos);
-            available_pos = available_pos & (available_pos - 1);
-            int pos_int = __builtin_ctz(pos_bit);
-            this->current_queen[row] = pos_int;
-            recursion(row+1, colmuns | pos_bit, (diagonals1 | pos_bit) >> 1, (diagonals2 | pos_bit) << 1);
-            this->current_queen[row] = -1;
+        vector<int> pos_all;
+        for(int i = 0; i < this->n; ++i){
+            if(fromleft[i] && fromright[i] && fromup[i]) pos_all.push_back(i);
         }
-    }
-    void generateAns(){
-        vector<string> temp;
-        for(int i = 0; i < this->n_origin; i++){
-            string temp_str;
-            temp_str.resize(this->n_origin, '.');
-            temp_str[this->current_queen[i]] = 'Q';
-            temp.push_back(temp_str);
+        if(pos_all.empty()) return;
+        bool temp_left = fromleft.front(), temp_right = fromright.back();
+        fromleft.pop_front();
+        fromleft.push_back(true);
+        fromright.pop_back();
+        fromright.push_front(true);
+        for(int pos : pos_all){
+            this->c_ans.push_back(this->null_line);
+            this->c_ans.back()[pos] = 'Q';
+            if(pos - 1 >= 0)    fromleft[pos - 1] = false;
+            if(pos + 1 < this->n)   fromright[pos + 1] = false;
+            fromup[pos] = false;
+            recrusion(c_line + 1, fromleft, fromright, fromup);
+            if(pos - 1 >= 0)    fromleft[pos - 1] = true;
+            if(pos + 1 < this->n)   fromright[pos + 1] = true;
+            fromup[pos] = true;
+            this->c_ans.pop_back();
         }
-        this->ans.push_back(temp);
+        fromleft.pop_back();
+        fromleft.push_front(temp_left);
+        fromright.pop_front();
+        fromright.push_back(temp_right);
     }
 };
 
@@ -54,6 +67,7 @@ int main(){
         for(auto str : len){
             cout << str << " ";
         }
+        cout << endl;
         cout << endl;
     }
 }

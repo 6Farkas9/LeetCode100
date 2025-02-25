@@ -20,19 +20,15 @@ public:
     
     void push(int val) {
         this->data.push(val);
-        if(this->min_stack.empty()){
-            this->min_stack.push(val);
-        }
-        else{
-            int last_min = this->min_stack.top();
-            if(val < last_min) last_min = val;
-            this->min_stack.push(last_min);
-        }
+        if(this->min_data.empty() || val <= this->min_data.top())
+            this->min_data.push(val);
     }
     
     void pop() {
+        if(this->data.empty())  return;
+        if(!this->min_data.empty() && this->data.top() == this->min_data.top())
+            this->min_data.pop();
         this->data.pop();
-        this->min_stack.pop();
     }
     
     int top() {
@@ -40,11 +36,11 @@ public:
     }
     
     int getMin() {
-        return this->min_stack.top();
+        return this->min_data.top();
     }
 private:
     stack<int> data;
-    stack<int> min_stack;
+    stack<int> min_data;
 };
 
 int main(){

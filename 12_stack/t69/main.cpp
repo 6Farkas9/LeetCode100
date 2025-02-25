@@ -9,29 +9,19 @@ class Solution {
 public:
     bool isValid(string s) {
         int length = s.size();
-        stack<char> data;
-        for(int i = 0; i < length; i++){
-            char c_str = s.at(i);
-            if(c_str == '(' || c_str == '{' || c_str == '['){
-                data.push(c_str);
-            }
+        if(length % 2 != 0) return false;
+        stack<char> st;
+        for(int i = 0; i < length; ++i){
+            if(s[i] == '(' || s[i] == '[' || s[i] == '{')   st.push(s[i]);
             else{
-                if(data.empty()) return false;
-                char c_last = data.top();
-                data.pop();
-                if(c_str == ')'){
-                    if(c_last != '(') return false;
-                }
-                if(c_str == '}'){
-                    if(c_last != '{') return false;
-                }
-                if(c_str == ']'){
-                    if(c_last != '[') return false;
-                }
+                if(st.empty())  return false;
+                char ch = st.top();
+                st.pop();
+                if(!(ch == '(' && s[i] == ')') && !(ch == '[' && s[i] == ']') && !(ch == '{' && s[i] == '}'))
+                    return false;
             }
         }
-        if(data.empty())    return true;
-        else    return false;
+        return st.empty();
     }
 };
 

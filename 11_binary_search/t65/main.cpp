@@ -5,41 +5,47 @@
 
 using namespace std;
 
-vector<int> nums = {};
+vector<int> nums = {5,7,7,8,8,10};
 int target = 6;
 
 class Solution {
 public:
     vector<int> searchRange(vector<int>& nums, int target) {
-        vector<int> ans = {-1,-1};
         int length = nums.size() - 1;
-        int has_target = searchPos(nums, target, 0, length);
-        if(has_target == -1)    return ans;
-        int left_edge = has_target - 1;
-        int right_edge = has_target + 1;
-        while(true){
-            has_target = searchPos(nums, target, 0, left_edge);
-            if(has_target == -1) break;
-            left_edge = has_target - 1;
+        int i, j, mid;
+        vector<int> ans(2, -1);
+        if(length == -1)    return ans;
+        int start = 0, end = length;
+        if(nums[start] != target){
+            i = 0, j = length;
+            while(i <= j){
+                cout << i << "," << j << endl;
+                mid = (i + j) / 2;
+                if(mid > 0 && nums[mid - 1] != target && nums[mid] == target){
+                    start = mid;
+                    break;
+                }
+                else if(nums[mid] >= target)    j = mid - 1;
+                else    i = mid + 1;
+            }
+            if(i > j)   return ans;
         }
-        ans[0] = left_edge + 1;
-        while(true){
-            has_target = searchPos(nums, target, right_edge, length);
-            if(has_target == -1) break;
-            right_edge = has_target + 1;
+        if(nums[end] != target){
+            i = 0, j = length;
+            while(i <= j){
+                cout << i << "," << j << endl;
+                mid = (i + j) / 2;
+                if(mid < length && nums[mid + 1] != target && nums[mid] == target){
+                    end = mid;
+                    break;
+                }
+                else if(nums[mid] <= target)    i = mid + 1;
+                else    j = mid - 1;
+            }
+            if(i > j)   return ans;
         }
-        ans[1] = right_edge - 1;
+        ans[0] = start, ans[1] = end;
         return ans;
-    }
-private:
-    int searchPos(vector<int>& nums, int target, int i, int j){
-        while(i <= j){
-            int mid = (i + j) / 2;
-            if(nums[mid] == target) return mid;
-            else if(nums[mid] > target) j = mid - 1;
-            else i = mid + 1;
-        }
-        return -1;
     }
 };
 
