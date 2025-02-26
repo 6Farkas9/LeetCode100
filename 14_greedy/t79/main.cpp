@@ -15,18 +15,17 @@ public:
         int ans = 0;
         while(true){
             if(current_pos == length) break;
-            else if(nums[current_pos] >= length - current_pos){
-                ans++;
+            else if(current_pos + nums[current_pos] >= length){
+                ++ans;
                 break;
             }
-            else if(nums[current_pos] == 0)   return 0;
             search_end = current_pos + nums[current_pos];
             next_pos = search_pos;
-            for(;search_pos <= search_end; search_pos++){
+            for(;search_pos <= search_end; ++search_pos){
                 if(search_pos + nums[search_pos] >= next_pos + nums[next_pos])  next_pos = search_pos;
             }
             current_pos = next_pos;
-            ans++;
+            ++ans;
         }
         return ans;
     }

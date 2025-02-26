@@ -13,40 +13,38 @@ using namespace std;
 
 class MedianFinder {
 public:
-    MedianFinder() {
+    MedianFinder(){
 
     }
     
     void addNum(int num) {
-        if(this->max_heap.empty()){
-            this->max_heap.push(num);
-        }
-        else if(num > this->max_heap.top()){
-            this->min_heap.push(num);
-            if(this->min_heap.size() > this->max_heap.size()){
-                this->max_heap.push(this->min_heap.top());
-                this->min_heap.pop();
+        if(this->first_half.size() == this->second_half.size()){
+            if(this->first_half.empty() || num <= this->second_half.top())  this->first_half.push(num);
+            else{
+                this->first_half.push(this->second_half.top());
+                this->second_half.pop();
+                this->second_half.push(num);
             }
         }
         else{
-            this->max_heap.push(num);
-            if(this->max_heap.size() > this->min_heap.size() + 1){
-                this->min_heap.push(this->max_heap.top());
-                this->max_heap.pop();
+            if(num >= this->first_half.top())   this->second_half.push(num);
+            else{
+                this->second_half.push(this->first_half.top());
+                this->first_half.pop();
+                this->first_half.push(num);
             }
         }
     }
     
     double findMedian() {
-        if(this->max_heap.size() > this->min_heap.size())
-            return this->max_heap.top();
+        if(this->first_half.size() != this->second_half.size())
+            return double(this->first_half.top());
         else
-            return (double(this->max_heap.top()) + double(this->min_heap.top())) / 2.0;
-            
+            return double(this->first_half.top() + this->second_half.top()) / 2.0;
     }
 private:
-    priority_queue<int> max_heap;
-    priority_queue<int, vector<int>, greater<int>> min_heap;
+    priority_queue<int, vector<int>, less<int>> first_half;
+    priority_queue<int, vector<int>, greater<int>> second_half;
 };
 
 int main(){

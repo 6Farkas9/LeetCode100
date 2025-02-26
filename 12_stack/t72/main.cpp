@@ -5,25 +5,31 @@
 
 using namespace std;
 
-vector<int> temperatures = {73,74,75,71,69,72,76,73};
+vector<int> temperatures = {89,62,70,58,47,47,46,76,100,70};
 
 class Solution {
 public:
     vector<int> dailyTemperatures(vector<int>& temperatures) {
-        stack<int> not_found;
         int length = temperatures.size();
-        not_found.push(0);
-        vector<int> ans(length, 0);
-        for(int i = 1; i < length; i++){
-            cout << i << endl;
-            int current_t = temperatures[i];
-            while(!not_found.empty() && current_t > temperatures[not_found.top()]){
-                cout << "ans[" << not_found.top() << "]:" << i - not_found.top() << endl;
-                ans[not_found.top()] = i - not_found.top();
-                not_found.pop();
+        vector<int> ans(length--);
+        stack<int> not_found;
+        for(int i = 0; i <= length; ++i){
+            if(!not_found.empty() && temperatures[i] > temperatures[not_found.top()]){
+                while(!not_found.empty() && temperatures[i] > temperatures[not_found.top()]){
+                    ans[not_found.top()] = i - not_found.top();
+                    not_found.pop();
+                }
             }
-            not_found.push(i);
+            if(i < length){
+                if( temperatures[i] < temperatures[i + 1]) ans[i] = 1;
+                else    not_found.push(i);
+            }
         }
+        while(!not_found.empty()){
+            ans[not_found.top()] = 0;
+            not_found.pop();
+        }
+        ans[length] = 0;
         return ans;
     }
 };

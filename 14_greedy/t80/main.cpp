@@ -10,23 +10,16 @@ string s = "eccbbbbdecf";
 class Solution {
 public:
     vector<int> partitionLabels(string s) {
+        unordered_map<char,int> pos;
         int length = s.size();
-        unordered_map<char, int> last_pos;
-        for(int i = 0; i < length; i++) last_pos[s[i]] = i;
+        for(int i = 0; i < length; ++i) pos[s[i]] = i;
         vector<int> ans;
-        int right_edge = last_pos[s[0]], left_edge = 0;
-        for(int i = 0; i < length; i++){
-            if(i == right_edge){
-                ans.push_back(right_edge - left_edge + 1);
-                cout << left_edge << "," << right_edge << endl;
-                int j = i + 1;
-                if(j < length){
-                    left_edge = j;
-                    right_edge = last_pos[s[j]];
-                }
-            }
-            else{
-                right_edge = max(last_pos[s[i]], right_edge);
+        int start = 0, end = 0;
+        for(int i = 0; i < length; ++i){
+            end = max(end, pos[s[i]]);
+            if(i == end){
+                ans.push_back(end - start + 1);
+                start = i + 1;
             }
         }
         return ans;

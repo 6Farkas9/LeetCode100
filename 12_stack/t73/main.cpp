@@ -5,26 +5,32 @@
 
 using namespace std;
 
-vector<int> heights = {1};
+vector<int> heights = {2,4};
 
 class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
-        stack<int> max_can_use;
         int length = heights.size();
-        vector<int> left_edge(length, -1), right_edge(length, length);
-        int ans = 0;
-        for(int i = 0; i < length; i++){
-            int current_h = heights[i];
-            while(!max_can_use.empty() && current_h <= heights[max_can_use.top()]){
-                right_edge[max_can_use.top()] = i;
-                max_can_use.pop();
+        if(length == 1) return heights[0];
+        vector<int> edge_left(length), edge_right(length);
+        stack<int> stack_left, stack_right;
+        for(int i = 0, j = length - 1; i < length; ++i, --j){
+            edge_left[i] = i; 
+            while(!stack_left.empty() && heights[i] <= heights[stack_left.top()]){
+                edge_left[i] = edge_left[stack_left.top()];
+                stack_left.pop();
             }
-            left_edge[i] = (max_can_use.empty() ? -1: max_can_use.top());
-            max_can_use.push(i);
+            stack_left.push(i);
+            edge_right[j] = j;
+            while(!stack_right.empty() && heights[j] <= heights[stack_right.top()]){
+                edge_right[j] = edge_right[stack_right.top()];
+                stack_right.pop();
+            }
+            stack_right.push(j);
         }
-        for(int i = 0; i < length; i++){
-            ans = max(ans, heights[i] * (right_edge[i] - left_edge[i] - 1));
+        int ans = 0;
+        for(int i = 0; i < length; ++i){
+            ans = max(ans, heights[i] * (edge_right[i] - edge_left[i] + 1));
         }
         return ans;
     }
