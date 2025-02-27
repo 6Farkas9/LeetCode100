@@ -10,20 +10,14 @@ vector<int> nums = {100,0,0,100,0,0,0};
 class Solution {
 public:
     int rob(vector<int>& nums) {
-        vector<int> ans_num;
         int length = nums.size();
-        if(length == 1) return nums[0];
-        int rob_last = nums[0], not_rob_last = 0;
-        int next_rob_last, next_not_rob_last;
-        int ans = rob_last;
-        for(int i = 1; i < length; i++){
-            next_rob_last = nums[i] + not_rob_last;
-            next_not_rob_last = max(rob_last, not_rob_last);
-            ans = max(ans, max(next_rob_last, next_not_rob_last));
-            rob_last = next_rob_last;
-            not_rob_last = next_not_rob_last;
+        vector<int> dp(length + 1);
+        dp[0] = 0;
+        dp[1] = nums[0];
+        for(int i = 2; i <= length; ++i){
+            dp[i] = max(dp[i - 1], dp[i - 2] + nums[i - 1]);
         }
-        return ans;
+        return dp[length];
     }
 };
 

@@ -12,13 +12,10 @@ public:
     int climbStairs(int n) {
         if(n == 1)  return 1;
         if(n == 2)  return 2;
-        int two_step_before = 1, one_step_before = 2, current;
-        for(int i = 3; i <= n; i++){
-            current = two_step_before + one_step_before;
-            two_step_before = one_step_before;
-            one_step_before = current;
-        }
-        return current;
+        vector<int> dp(n);
+        dp[0] = 1, dp[1] = 2;
+        for(int i = 2; i < n; ++i)  dp[i] = dp[i - 1] + dp[i - 2];
+        return dp[n-1];
     }
 };
 

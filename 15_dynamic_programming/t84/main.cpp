@@ -4,26 +4,27 @@
 #include <math.h>
 
 using namespace std;
-int n = 13;
+int n = 12;
 
 class Solution {
 public:
     int numSquares(int n) {
-        vector<int> data;
-        data.resize(n,1);
-        for(int i = 0, i_n = 1; i < n; i++, i_n++){
-            double sqrt_double = sqrt(i_n);
-            int sqrt_int = int(sqrt_double);
-            if(sqrt_int != sqrt_double){
+        double sqn = sqrt(n);
+        if(int(sqn) == sqn) return 1;
+        vector<int> dp(n + 1);
+        for(int i = 1; i <= n; ++i){
+            sqn = sqrt(i);
+            int int_sqn = (sqn);
+            if(int_sqn == sqn)    dp[i] = 1;
+            else{
                 int temp = INT_MAX;
-                for(int j = 1; j <= sqrt_int; j++){
-                    int pow_int = pow(j,2);
-                    if(data[i - pow_int] + 1 < temp)    temp = data[i - pow_int] + 1;
+                for(int j = 1; j <= int_sqn; ++j){
+                    temp = min(temp, dp[i - j * j]);
                 }
-                data[i] = temp; 
+                dp[i] = temp + 1;
             }
         }
-        return data[n-1];
+        return dp[n];
     }
 };
 

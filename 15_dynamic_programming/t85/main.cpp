@@ -3,6 +3,7 @@
 #include <climits>
 #include <math.h>
 #include <unordered_set>
+#include <algorithm>
 
 using namespace std;
 
@@ -15,8 +16,8 @@ public:
         int length = coins.size();
         vector<int> dp(amount + 1, amount + 1);
         dp[0] = 0;
-        for(int i = 1; i <= amount; i++){
-            for(int j = 0; j < length; j++){
+        for(int i = 1; i <= amount; ++i){
+            for(int j = 0; j < length; ++j){
                 if(coins[j] <= i)   dp[i] = min(dp[i], dp[i - coins[j]] + 1);
             }
         }

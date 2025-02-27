@@ -12,20 +12,28 @@ vector<string> wordDict = {"apple", "pen"};
 class Solution {
 public:
     bool wordBreak(string s, vector<string>& wordDict) {
-        unordered_set<string> word_set;
-        for(auto str : wordDict)    word_set.insert(str);
         int length = s.size();
-        vector<bool> dp(length + 1, false);
-        dp[0] = true;
-        for(int i = 1; i <= length; i++){
-            for(int j = 0; j < i; j++){
-                if(dp[j] && word_set.find(s.substr(j, i - j)) != word_set.end()){
-                    dp[i] = true;
-                    break;
+        unordered_set<string> word_set;
+        for(string & str : wordDict)    word_set.insert(str);
+        vector<vector<bool>> judge(length, vector<bool>(length, false));
+        int i, j, k;
+        for(k = 0; k < length; ++k){
+            for(j = k; j < length; ++j){
+                i = j - k;
+                judge[i][j] = word_set.find(s.substr(i, k + 1)) != word_set.end();
+            }
+        }
+        vector<bool> dp(length, false);
+        for(j = 0; j < length; ++j){
+            if(judge[0][j]) dp[j] = true;
+            else{
+                for(i = 0; i < j; ++i){
+                    dp[j] = dp[j] || (dp[i] && judge[i+1][j]);
+                    if(dp[j])   break;
                 }
             }
         }
-        return dp[length];
+        return dp[length - 1];
     }
 };
 

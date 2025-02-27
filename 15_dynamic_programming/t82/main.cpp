@@ -11,18 +11,11 @@ class Solution {
 public:
     vector<vector<int>> generate(int numRows) {
         vector<vector<int>> ans;
-        ans.push_back(vector<int>{1});
-        if(numRows == 1)    return ans;
-        ans.push_back(vector<int>{1,1});
-        if(numRows == 2)    return ans;
-        vector<int> temp;
-        for(int i = 2; i < numRows; i++){
-            temp.resize(i + 1,1);
-            int edge = i - 1;
-            for(int j = 1; j <= edge; j++){
-                temp[j] = ans[edge][j-1] + ans[edge][j];
+        for(int i = 0; i < numRows; ++i){
+            ans.push_back(vector<int>(i + 1, 1));
+            for(int j = 1; j < i; ++j){
+                ans[i][j] = ans[i - 1][j - 1] + ans[i - 1][j];
             }
-            ans.push_back(temp);
         }
         return ans;
     }

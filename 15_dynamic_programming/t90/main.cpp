@@ -3,6 +3,7 @@
 #include <climits>
 #include <math.h>
 #include <unordered_set>
+#include <stack>
 
 using namespace std;
 
@@ -13,30 +14,16 @@ class Solution {
 public:
     int longestValidParentheses(string s) {
         int length = s.size();
+        if(!length) return 0;
         int ans = 0;
-        vector<int> dp(length, 0);
-        for(int i = 0; i < length; i++){
-            if(s[i] == ')'){
-                int j = i - 1;
-                if(j >= 0){
-                    if(dp[j] == 0 && s[j] == '('){
-                        if(j - 1 >= 0)  dp[i] = dp[j - 1] + 2;
-                        else    dp[i] = 2;
-                    }
-                    else if(dp[j] == 0){
-                        dp[i] = 0;
-                    }
-                    else{
-                        int k = j - dp[j];
-                        if(k >= 0){
-                            if(s[k] == '('){
-                                if(k - 1 >= 0)  dp[i] = 2 + dp[j] + dp[k - 1];
-                                else    dp[i] = dp[i] = 2 + dp[j];
-                            }
-                        }
-                    }
-                }
-                ans = max(ans, dp[i]);
+        stack<pair<char,int>> st;
+        st.push(make_pair(')', -1));
+        for(int i = 0; i < length; ++i){
+            if(s[i] == '(' || st.top().first == ')') st.push(make_pair(s[i], i));
+            else{
+                st.pop();
+                int j = st.top().second;
+                ans = max(ans, i - j);
             }
         }
         return ans;

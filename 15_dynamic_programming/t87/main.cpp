@@ -6,36 +6,35 @@
 
 using namespace std;
 
-vector<int> nums = {0,8,4,12,2};
+vector<int> nums = {15,16,17,18,6,7,8,0,1,2,3,4,5};
 
 class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) {
-        int ans = 0, length = nums.size();
+        int length = nums.size();
         vector<int> dp;
+        int i, ans = 0;
         dp.push_back(nums[0]);
-        for(int i = 1; i < length; i++){
+        for(i = 1; i < length; ++i){
             if(nums[i] > dp[ans]){
                 dp.push_back(nums[i]);
-                ans++;
+                ++ans;
             }
-            else{
+            else if(nums[i] < dp[ans]){
                 int left = 0, right = ans;
-                while(left < right){
+                while(left <= right){
                     int mid = (left + right) / 2;
                     if(dp[mid] == nums[i]){
                         left = mid;
                         break;
                     }
-                    else if(dp[mid] < nums[i]){
-                        left = mid + 1;
-                    }
-                    else{
-                        right = mid;
-                    }
+                    else if(dp[mid] > nums[i])  right = mid - 1;
+                    else    left = mid + 1;
                 }
                 dp[left] = nums[i];
             }
+            for(int j = 0; j <= ans; ++j)   cout << dp[j] << " ";
+            cout << endl;
         }
         return ans + 1;
     }
