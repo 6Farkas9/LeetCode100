@@ -3,46 +3,28 @@
 
 using namespace std;
 
-vector<int> nums{1,2,3};
+vector<int> nums{4,2,0,3,2,5};
 
 class Solution {
 public:
     int trap(vector<int>& height) {
         int length = height.size();
-        int i = 0, j = length - 1;
-        int res = 0;
-        int current_edge = i;
-        int current_height = height[i];
-        int temp_add = 0;
-        while(i <= j){
-            if(height[i] >= current_height){
-                res += temp_add;
-                temp_add = 0;
-                current_edge = i;
-                current_height = height[i];
+        int ans = 0;
+        int left = 0, right = length - 1;
+        int left_max = 0, right_max = 0;
+        while(left < right){
+            left_max = max(left_max, height[left]);
+            right_max = max(right_max, height[right]);
+            if(height[left] < right_max){
+                ans += left_max - height[left];
+                ++left;
             }
             else{
-                temp_add += current_height - height[i];
+                ans += right_max - height[right];
+                --right;
             }
-            ++i;
         }
-        i = current_edge;
-        current_edge = j;
-        current_height = height[j];
-        temp_add = 0;
-        while(i <= j){
-            if(height[j] >= current_height){
-                res += temp_add;
-                temp_add = 0;
-                current_edge = j;
-                current_height = height[j];
-            }
-            else{
-                temp_add += current_height - height[j];
-            }
-            --j;
-        }
-        return res;
+        return ans;
     }
 };
 
