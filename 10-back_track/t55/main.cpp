@@ -12,19 +12,19 @@ class Solution {
 public:
     vector<vector<int>> permute(vector<int>& nums) {
         int length = nums.size() - 1;
-        premuteRecursion(nums, 0, length);
-        return this->ans;
+        vector<vector<int>> ans;
+        recursion(nums, ans, length, 0);
+        return ans;
     }
 private:
-    vector<vector<int>> ans;
-    void premuteRecursion(vector<int>& nums, int start, int end){
-        if(start == end){
-            this->ans.push_back(nums);
+    void recursion(vector<int> &nums, vector<vector<int>> &ans, int &length, int start){
+        if(start == length){
+            ans.push_back(nums);
             return;
         }
-        for(int i = start; i <= end; ++i){
+        for(int i = start; i <= length; ++i){
             swap(nums[start], nums[i]);
-            premuteRecursion(nums, start + 1, end);
+            recursion(nums, ans, length, start + 1);
             swap(nums[start], nums[i]);
         }
     }
