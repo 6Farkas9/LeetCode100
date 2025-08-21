@@ -1,6 +1,11 @@
 #include <iostream>
+#include <unordered_map>
+#include <vector>
 
 using namespace std;
+
+vector<int> nums{2,7,11,15};
+int target = 9;
 
 class Solution {
 public:
